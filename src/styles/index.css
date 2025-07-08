@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import "./global.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Font Faces */
+
+/* Only necessary font faces for professional use */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/assets/fonts/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('/assets/fonts/Roboto-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+/* Professional font usage */
+body {
+  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-weight: 400;
+}
+h1 {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+nav, .navbar, .navigation {
+  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #F3F4F6;
+}

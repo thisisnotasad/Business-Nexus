@@ -1,0 +1,55 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "investor@example.com",
+      "password": "investor123",
+      "role": "investor",
+      "name": "John Doe",
+      "bio": "Venture capitalist with 10+ years in tech.",
+      "interests": [
+        "Tech",
+        "Healthcare"
+      ],
+      "portfolio": [
+        "Company A",
+        "Company B"
+      ]
+    },
+    {
+      "id": 2,
+      "email": "entrepreneur@example.com",
+      "password": "entrepreneur123",
+      "role": "entrepreneur",
+      "name": "Jane Smith",
+      "bio": "Founder of AI startup.",
+      "startupDescription": "AI-powered analytics platform.",
+      "fundingNeed": 500000,
+      "pitchDeck": "placeholder.pdf"
+    },
+    {
+      "id": "524e",
+      "email": "joe@gmail.com",
+      "password": "11223344",
+      "role": "entrepreneur",
+      "name": "Joe"
+    },
+    {
+      "id": "d9d4",
+      "email": "jane@gmail.com",
+      "password": "jane1234",
+      "role": "entrepreneur",
+      "name": "Jane"
+    }
+  ],
+  "requests": [
+    {
+      "id": 1,
+      "investorId": 1,
+      "entrepreneurId": 2,
+      "investorName": "John Doe",
+      "profileSnippet": "Interested in AI startups.",
+      "status": "Pending"
+    }
+  ]
+}

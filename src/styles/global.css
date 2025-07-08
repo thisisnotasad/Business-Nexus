@@ -1,0 +1,18 @@
+/* src/styles/global.css */
+/* Reset some default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}   
+
+
+/* Cstom scrollbar for chat window */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9CA3AF;
+  border-radius: 4px;
+}
