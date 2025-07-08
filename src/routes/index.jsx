@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+
 import DashboardLayout from '../layouts/DashboardLayout';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
@@ -8,8 +9,27 @@ import InvestorDashboard from '../pages/InvestorDashboard';
 import EntrepreneurDashboard from '../pages/EntrepreneurDashboard';
 import InvestorProfile from '../pages/InvestorProfile';
 import EntrepreneurProfile from '../pages/EntrepreneurProfile';
+
 import Chat from '../pages/Chat';
 import ProtectedRoute from '../components/common/ProtectedRoute';
+import NotFound from '../pages/NotFound';
+import { useParams } from 'react-router-dom';
+
+
+// DashboardSelector and ProfileSelector wrappers
+function DashboardSelector() {
+  const { role } = useParams();
+  if (role === 'investor') return <InvestorDashboard />;
+  if (role === 'entrepreneur') return <EntrepreneurDashboard />;
+  return <NotFound />;
+}
+
+function ProfileSelector() {
+  const { role } = useParams();
+  if (role === 'investor') return <InvestorProfile />;
+  if (role === 'entrepreneur') return <EntrepreneurProfile />;
+  return <NotFound />;
+}
 
 
 const AppRoutes = () => {
@@ -21,26 +41,16 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
 
       {/* Dashboards (Protected) */}
-      <Route path="/dashboard/investor" element={
+      <Route path="/dashboard/:role" element={
         <ProtectedRoute>
-          <InvestorDashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/dashboard/entrepreneur" element={
-        <ProtectedRoute>
-          <EntrepreneurDashboard />
+          <DashboardSelector />
         </ProtectedRoute>
       } />
 
       {/* Profiles (Protected) */}
-      <Route path="/profile/investor" element={
+      <Route path="/profile/:role" element={
         <ProtectedRoute>
-          <InvestorProfile />
-        </ProtectedRoute>
-      } />
-      <Route path="/profile/entrepreneur" element={
-        <ProtectedRoute>
-          <EntrepreneurProfile />
+          <ProfileSelector />
         </ProtectedRoute>
       } />
 
@@ -57,6 +67,8 @@ const AppRoutes = () => {
           <DashboardLayout />
         </ProtectedRoute>
       } />
+      {/* 404 Not Found (catch-all) */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

@@ -41,7 +41,7 @@ function LoginForm() {
       localStorage.setItem("currentUser", JSON.stringify(user));
       login(user); // set user in context
 
-      navigate(`/dashboard/${user.role}`);
+      navigate(`/dashboard/${user.role}`,{replace: true}); // Redirect to dashboard based on role 
     } catch (err) {
       setError("An error occurred. Please try again.");
       console.error(err);

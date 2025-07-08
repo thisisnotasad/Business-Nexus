@@ -93,7 +93,7 @@ business-nexus/
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/business-nexus.git
+   git clone https://github.com/thisisnotasad/Business-Nexus.git 
    cd business-nexus
    ```
 
