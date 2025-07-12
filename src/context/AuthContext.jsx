@@ -1,26 +1,39 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
+import api from "../utils/api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem("currentUser");
-    // Parse the stored user data from localStorage, if it exists
-    return stored ? JSON.parse(stored) : null;
-  });
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
 
-  // Simulate login (replace with real API logic)
-  const login = (userData) => {
-    setUser(userData);
+  const login = async (email, password) => {
+    try {
+      const response = await api.get(`/users?email=${email}&password=${password}`);
+      if (response.data.length > 0) {
+        const userData = response.data[0];
+        localStorage.setItem("currentUser", JSON.stringify(userData));
+        setUser(userData);
+        console.log("Logged in user:", userData);
+        return userData;
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      throw err;
+    }
   };
 
   const logout = () => {
-    setUser(null);
     localStorage.removeItem("currentUser");
+    setUser(null);
   };
 
-  const value = { user, login, logout };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

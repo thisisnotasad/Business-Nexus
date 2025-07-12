@@ -4,7 +4,7 @@ import api from "../../utils/api";
 import Card from "../common/Card";
 import Button from "../common/Button";
 
-function InvestorDashboard() {
+function EntrepreneursList() {
   const [entrepreneurs, setEntrepreneurs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -18,7 +18,7 @@ function InvestorDashboard() {
       } catch (err) {
         setError("Failed to load entrepreneurs.");
         setLoading(false);
-        console.error(err);
+        console.error("Error fetching entrepreneurs:", err);
       }
     }
     fetchEntrepreneurs();
@@ -28,20 +28,22 @@ function InvestorDashboard() {
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Requests from Entrepreneurs</h1>
+    <div className="w-full">
+      <h2 className="text-xl font-semibold text-blue-800 mb-4">Entrepreneur Opportunities</h2>
       {entrepreneurs.length === 0 ? (
         <p className="text-gray-500">No entrepreneurs found.</p>
       ) : (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2  lg:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {entrepreneurs.map((entrepreneur) => (
-            <Card key={entrepreneur.id}>
-              <h3 className="text-lg font-bold">{entrepreneur.name}</h3>
-              <p className="text-gray-600">{entrepreneur.startupName}</p>
-              <p className="text-sm text-gray-500 truncate">{entrepreneur.startupDescription}</p>
-              <p className="mt-2">Funding Needed: ${entrepreneur.fundingNeed.toLocaleString()}</p>
+            <Card key={entrepreneur.id} className="hover:shadow-lg transition-transform hover:scale-105">
+              <h3 className="text-lg font-bold text-gray-800">{entrepreneur.name}</h3>
+              <p className="text-gray-600"><strong>Startup:</strong> {entrepreneur.startupName}</p>
+              <p className="text-sm text-gray-500 truncate"><strong>Overview:</strong> {entrepreneur.startupDescription}</p>
+              <p className="mt-2"><strong>Funding:</strong> ${entrepreneur.fundingNeed.toLocaleString()}</p>
               <Link to={`/profile/entrepreneur/${entrepreneur.id}`}>
-                <Button className="mt-4 w-full">View Profile</Button>
+                <Button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white">
+                  View Profile
+                </Button>
               </Link>
             </Card>
           ))}
@@ -51,4 +53,4 @@ function InvestorDashboard() {
   );
 }
 
-export default InvestorDashboard;
+export default EntrepreneursList;

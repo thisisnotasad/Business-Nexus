@@ -4,34 +4,35 @@ import api from "../utils/api";
 import Button from "../components/common/Button";
 
 function Chat() {
-  const { userId } = useParams();
+  const { role, id } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchMessages() {
       try {
-        const chatId = [currentUser.id, parseInt(userId)].sort().join("-");
+        const chatId = [currentUser.id, parseInt(id)].sort().join("-");
         const response = await api.get(`/messages?chatId=${chatId}`);
         setMessages(response.data);
-        setLoading(true);
+        setLoading(false);
       } catch (err) {
         setError("Failed to load messages.");
         setLoading(false);
         console.error("Error fetching messages:", err);
       }
     }
-    if (currentUser && userId) fetchMessages();
-  }, [userId, currentUser]);
+    if (currentUser && id) fetchMessages();
+  }, [id, currentUser]);
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
     try {
-      const chatId = [currentUser.id, parseInt(userId)].sort().join("-");
+      const chatId = [currentUser.id, parseInt(id)].sort().join("-");
       await api.post("/messages", {
         chatId,
         senderId: currentUser.id,
@@ -54,7 +55,7 @@ function Chat() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Chat</h1>
+      <h1 className="text-2xl font-bold mb-4">Chat with {role === "investor" ? "Investor" : "Entrepreneur"}</h1>
       <div className="bg-white shadow-md rounded-lg p-4 mb-4 h-96 overflow-y-auto">
         {messages.length === 0 ? (
           <p className="text-gray-500">No messages yet.</p>
@@ -80,7 +81,7 @@ function Chat() {
           className="flex-1 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Type a message..."
         />
-        <Button type="submit">Send</Button>
+        <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white">Send</Button>
       </form>
     </div>
   );

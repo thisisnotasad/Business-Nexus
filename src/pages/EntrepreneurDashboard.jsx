@@ -1,13 +1,12 @@
-import React from 'react'
+import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import InvestorsList from '../components/ProfileLists/InvestorsList';
 import InvestorsRequests from '../components/ProfileLists/InvestorsRequests';
-
 
 const EntrepreneurDashboard = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const handleLogout = () => {
     logout();
@@ -27,7 +26,7 @@ const EntrepreneurDashboard = () => {
           <span className="text-4xl mb-2">🏢</span>
           <h2 className="font-semibold text-lg mb-1">My Business</h2>
           <p className="text-gray-500 text-sm mb-3 text-center">View and update your business profile and details.</p>
-          <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">View Business</button>
+          <button onClick={() => navigate(`/profile/entrepreneur/${currentUser?.id}`)} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">View Business</button>
         </div>
         <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
           <span className="text-4xl mb-2">💡</span>
@@ -39,16 +38,14 @@ const EntrepreneurDashboard = () => {
           <span className="text-4xl mb-2">💬</span>
           <h2 className="font-semibold text-lg mb-1">Messages</h2>
           <p className="text-gray-500 text-sm mb-3 text-center">Chat and connect with potential investors.</p>
-          <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">Go to Chat</button>
+          <button onClick={() => navigate(`/chat/investor/${currentUser?.id === 1 ? 2 : 1}`)} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">Go to Chat</button>
         </div>
       </div>
-      <div className='w-full flex justify-center items-center mt-2'>
-        {/* <InvestorsList/> */}
-      <InvestorsRequests/>
+      <div className="w-full flex justify-center items-center mt-2">
+        <InvestorsRequests />
       </div>
-      
     </div>
-  )
-}
+  );
+};
 
-export default EntrepreneurDashboard
+export default EntrepreneurDashboard;

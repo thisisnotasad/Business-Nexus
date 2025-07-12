@@ -15,30 +15,41 @@ function EntrepreneurProfile() {
   const [entrepreneur, setEntrepreneur] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [requestSent, setRequestSent] = useState(false);
-
+  const [hasSentRequest, setHasSentRequest] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   useEffect(() => {
-    async function fetchEntrepreneur() {
+    async function fetchEntrepreneurAndRequests() {
       try {
-        const response = await api.get(`/users/${id}`);
+        // Fetch entrepreneur data
+        const response = await api.get(`/users/${parseInt(id)}`);
         setEntrepreneur(response.data);
+
+        // Check for existing requests
+        if (currentUser && currentUser.role === "investor") {
+          const requestsResponse = await api.get(
+            `/requests?investorId=${currentUser.id}&entrepreneurId=${parseInt(id)}`
+          );
+          setHasSentRequest(requestsResponse.data.length > 0);
+        }
+
         setLoading(false);
       } catch (err) {
-        console.error(err);
+        setError("Failed to load profile or check requests.");
         setLoading(false);
+        console.error("Error:", err);
       }
     }
-    if (id) {
-      fetchEntrepreneur();
-      setRequestSent(false); // Reset requestSent when id changes
-    }
-  }, [id]);
+    if (id) fetchEntrepreneurAndRequests();
+  }, [id, currentUser]);
 
   const handleSendRequest = async () => {
     if (!currentUser || currentUser.role !== "investor") {
       setError("Only investors can send requests.");
+      return;
+    }
+    if (hasSentRequest) {
+      setError("You have already sent a request to this entrepreneur.");
       return;
     }
     try {
@@ -49,7 +60,7 @@ function EntrepreneurProfile() {
         profileSnippet: currentUser.bio || "Interested in your startup.",
         status: "Pending",
       });
-      setRequestSent(true);
+      setHasSentRequest(true);
       alert("Collaboration request sent successfully!");
     } catch (err) {
       setError("Failed to send request.");
@@ -106,20 +117,15 @@ function EntrepreneurProfile() {
                   <EnvelopeIcon className="h-4 w-4" />
                   Contact
                 </Button>
-
-                {currentUser &&
-                  currentUser.role === "investor" &&
-                  currentUser.id !== parseInt(id) && (
-                    <Button
-                      onClick={handleSendRequest}
-                      disabled={requestSent}
-                      className={`flex items-center gap-2 hover:bg-blue-600 text-white ${
-                        requestSent ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      {requestSent ? "Request Sent" : " Request Collaboration"}
-                    </Button>
-                  )}
+                {currentUser && currentUser.role === "investor" && currentUser.id !== parseInt(id) && (
+                  <Button
+                    onClick={handleSendRequest}
+                    disabled={hasSentRequest}
+                    className={`flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white ${hasSentRequest ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    {hasSentRequest ? "Request Already Sent" : "Request Collaboration"}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -146,7 +152,6 @@ function EntrepreneurProfile() {
             <p className="text-gray-600 mb-4">
               {entrepreneur.startupDescription}
             </p>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-indigo-50 rounded-lg p-4">
                 <div className="flex items-center gap-3 mb-2">
@@ -154,12 +159,9 @@ function EntrepreneurProfile() {
                   <h3 className="font-medium text-gray-700">Funding Needed</h3>
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
-                  $
-                  {entrepreneur.fundingNeed?.toLocaleString() ||
-                    "Not specified"}
+                  ${entrepreneur.fundingNeed?.toLocaleString() || "Not specified"}
                 </p>
               </div>
-
               <div className="bg-purple-50 rounded-lg p-4">
                 <div className="flex items-center gap-3 mb-2">
                   <DocumentTextIcon className="h-5 w-5 text-purple-600" />
@@ -182,7 +184,7 @@ function EntrepreneurProfile() {
             </div>
           </div>
 
-          {/* Additional Fields Section - Expandable */}
+          {/* Additional Fields Section */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               More Information
@@ -200,7 +202,6 @@ function EntrepreneurProfile() {
                   {entrepreneur.stage || "Not specified"}
                 </p>
               </div>
-              {/* Add more fields as needed */}
             </div>
           </div>
         </div>
@@ -239,7 +240,7 @@ function EntrepreneurProfile() {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Quick Actions
             </h2>
-            <div className="space-y-3 gap-2">
+            <div className="space-y-3">
               <Button variant="outline-indigo">Schedule Meeting</Button>
               <Button variant="outline-purple">Request Financials</Button>
               <Button variant="outline-gray">Save to Watchlist</Button>
