@@ -1,55 +1,288 @@
 {
   "users": [
     {
-      "id": 1,
-      "email": "investor@example.com",
-      "password": "investor123",
+      "id": "1",
+      "email": "john@investor.com",
+      "password": "Invest123!",
       "role": "investor",
       "name": "John Doe",
-      "bio": "Venture capitalist with 10+ years in tech.",
+      "bio": "Venture capitalist with a passion for tech startups.",
       "interests": [
-        "Tech",
-        "Healthcare"
+        "AI",
+        "FinTech"
       ],
       "portfolio": [
-        "Company A",
-        "Company B"
+        "TechTrend",
+        "PaySmart"
       ]
     },
     {
-      "id": 2,
-      "email": "entrepreneur@example.com",
-      "password": "entrepreneur123",
+      "id": "2",
+      "email": "sarah@entrepreneur.com",
+      "password": "Startup456!",
       "role": "entrepreneur",
-      "name": "Jane Smith",
-      "bio": "Founder of AI startup.",
-      "startupDescription": "AI-powered analytics platform.",
+      "name": "Sarah Wilson",
+      "bio": "Founder of an AI-driven health platform.",
+      "startupName": "HealthAI",
+      "startupDescription": "AI-powered diagnostics for faster healthcare.",
+      "fundingNeed": 600000,
+      "pitchDeck": "healthai.pdf"
+    },
+    {
+      "id": "3",
+      "email": "mike@investor.com",
+      "password": "Invest789!",
+      "role": "investor",
+      "name": "Mike Chen",
+      "bio": "Investor focusing on sustainable energy.",
+      "interests": [
+        "GreenTech",
+        "Renewables"
+      ],
+      "portfolio": [
+        "SolarPeak",
+        "EcoEnergy"
+      ]
+    },
+    {
+      "id": "4",
+      "email": "emma@entrepreneur.com",
+      "password": "GrowEasy321!",
+      "role": "entrepreneur",
+      "name": "Emma Brown",
+      "bio": "Building a sustainable e-commerce platform.",
+      "startupName": "GreenShop",
+      "startupDescription": "Eco-friendly online marketplace.",
+      "fundingNeed": 400000,
+      "pitchDeck": "greenshop.pdf"
+    },
+    {
+      "id": "5",
+      "email": "david@investor.com",
+      "password": "Capital101!",
+      "role": "investor",
+      "name": "David Lee",
+      "bio": "Experienced investor in EdTech and SaaS.",
+      "interests": [
+        "EdTech",
+        "SaaS"
+      ],
+      "portfolio": [
+        "LearnFast",
+        "CloudPro"
+      ]
+    },
+    {
+      "id": "6",
+      "email": "lisa@entrepreneur.com",
+      "password": "InnoVate202!",
+      "role": "entrepreneur",
+      "name": "Lisa Patel",
+      "bio": "Creator of a blockchain-based supply chain solution.",
+      "startupName": "ChainTrack",
+      "startupDescription": "Blockchain for transparent supply chains.",
+      "fundingNeed": 800000,
+      "pitchDeck": "chaintrack.pdf"
+    },
+    {
+      "id": "7",
+      "email": "alex@investor.com",
+      "password": "FundNow654!",
+      "role": "investor",
+      "name": "Alex Turner",
+      "bio": "Angel investor with a focus on mobile apps.",
+      "interests": [
+        "Mobile",
+        "Gaming"
+      ],
+      "portfolio": [
+        "GameStar",
+        "AppFlow"
+      ]
+    },
+    {
+      "id": "8",
+      "email": "chloe@entrepreneur.com",
+      "password": "StartNow987!",
+      "role": "entrepreneur",
+      "name": "Chloe Evans",
+      "bio": "Founder of a food delivery startup.",
+      "startupName": "FoodDash",
+      "startupDescription": "Fast, local food delivery service.",
+      "fundingNeed": 300000,
+      "pitchDeck": "fooddash.pdf"
+    },
+    {
+      "id": "9",
+      "email": "olivia@investor.com",
+      "password": "InvestNow111!",
+      "role": "investor",
+      "name": "Olivia Garcia",
+      "bio": "Investor in health and wellness startups.",
+      "interests": [
+        "HealthTech",
+        "Wellness"
+      ],
+      "portfolio": [
+        "FitLife",
+        "MediCare"
+      ]
+    },
+    {
+      "id": "10",
+      "email": "james@entrepreneur.com",
+      "password": "BuildFast222!",
+      "role": "entrepreneur",
+      "name": "James Kim",
+      "bio": "Developing an AR platform for education.",
+      "startupName": "EduAR",
+      "startupDescription": "Augmented reality for immersive learning.",
       "fundingNeed": 500000,
-      "pitchDeck": "placeholder.pdf"
-    },
-    {
-      "id": "524e",
-      "email": "joe@gmail.com",
-      "password": "11223344",
-      "role": "entrepreneur",
-      "name": "Joe"
-    },
-    {
-      "id": "d9d4",
-      "email": "jane@gmail.com",
-      "password": "jane1234",
-      "role": "entrepreneur",
-      "name": "Jane"
+      "pitchDeck": "eduar.pdf"
     }
   ],
   "requests": [
     {
-      "id": 1,
-      "investorId": 1,
-      "entrepreneurId": 2,
-      "investorName": "John Doe",
-      "profileSnippet": "Interested in AI startups.",
+      "status": "Accepted",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "investorId": 3,
+      "entrepreneurId": 4,
+      "investorName": "Mike Chen",
+      "profileSnippet": "Looking for sustainable tech ventures.",
+      "status": "Accepted"
+    },
+    {
+      "id": "3",
+      "investorId": 5,
+      "entrepreneurId": 6,
+      "investorName": "David Lee",
+      "profileSnippet": "Excited about blockchain innovations.",
       "status": "Pending"
+    },
+    {
+      "id": "4",
+      "investorId": 7,
+      "entrepreneurId": 8,
+      "investorName": "Alex Turner",
+      "profileSnippet": "Seeking innovative mobile apps.",
+      "status": "Rejected"
+    },
+    {
+      "id": "5",
+      "investorId": 9,
+      "entrepreneurId": 10,
+      "investorName": "Olivia Garcia",
+      "profileSnippet": "Interested in educational tech.",
+      "status": "Accepted"
+    },
+    {
+      "id": "6",
+      "investorId": 1,
+      "entrepreneurId": 8,
+      "investorName": "John Doe",
+      "profileSnippet": "Exploring food tech opportunities.",
+      "status": "Pending"
+    },
+    {
+      "status": "Rejected",
+      "id": "2ef4"
+    },
+    {
+      "status": "Rejected",
+      "id": "4a08"
+    },
+    {
+      "status": "Accepted",
+      "id": "ae65"
+    },
+    {
+      "status": "Accepted",
+      "id": "34d4"
+    },
+    {
+      "id": "5846",
+      "investorId": "1",
+      "entrepreneurId": 6,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    },
+    {
+      "id": "b3ea",
+      "investorId": "1",
+      "entrepreneurId": 6,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    },
+    {
+      "id": "cee8",
+      "investorId": "1",
+      "entrepreneurId": 6,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    },
+    {
+      "id": "f810",
+      "investorId": "1",
+      "entrepreneurId": 6,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    },
+    {
+      "id": "e3bc",
+      "investorId": "1",
+      "entrepreneurId": 6,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    },
+    {
+      "id": "71a2",
+      "investorId": "1",
+      "entrepreneurId": 4,
+      "investorName": "John Doe",
+      "profileSnippet": "Venture capitalist with a passion for tech startups.",
+      "status": "Pending"
+    }
+  ],
+  "messages": [
+    {
+      "id": "1",
+      "chatId": "1-2",
+      "senderId": 1,
+      "senderName": "John Doe",
+      "text": "Hi Sarah, interested in HealthAI!",
+      "timestamp": "2025-07-11T19:00:00Z"
+    },
+    {
+      "id": "2",
+      "chatId": "1-2",
+      "senderId": 2,
+      "senderName": "Sarah Wilson",
+      "text": "Thanks, John! Let's discuss details.",
+      "timestamp": "2025-07-11T19:05:00Z"
+    },
+    {
+      "id": "ccda",
+      "chatId": "2-NaN",
+      "senderId": "2",
+      "senderName": "Sarah Wilson",
+      "text": "hey",
+      "timestamp": "2025-07-11T17:05:25.143Z"
+    },
+    {
+      "id": "538c",
+      "chatId": "2-NaN",
+      "senderId": "2",
+      "senderName": "Sarah Wilson",
+      "text": "wow",
+      "timestamp": "2025-07-11T17:05:32.411Z"
     }
   ]
 }

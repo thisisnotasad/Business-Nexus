@@ -27,11 +27,7 @@ dist-ssr
 
 
 .env
-eslint.config.js
-vite.config.js
 webpack.config.js
-postcss.config.js
-tailwind.config.js
 package-lock.json
 yarn.lock
 pnpm-lock.yaml

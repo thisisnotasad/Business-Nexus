@@ -13,15 +13,15 @@ function DashboardLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-blue-200">
-      <Sidebar onLogout={handleLogout} userRole={user?.role || "investor"} />
-      <main className="flex-1 p-6 md:p-10">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+      <Sidebar onLogout={handleLogout} userRole={user?.role || "investor"} user={user} />
+      <main className="flex-1 p-6 md:p-8 lg:p-10 overflow-auto">
         <DashboardHeader
           title="Dashboard"
-          subtitle="Welcome to your business dashboard."
+          subtitle={`Welcome back, ${user?.name || ''}`}
           user={user}
         />
-        <div className="bg-white/80 rounded-2xl shadow-lg p-6 min-h-[60vh]">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-6 min-h-[70vh] border border-slate-100 dark:border-slate-800 transition-colors duration-200">
           <Outlet />
         </div>
       </main>

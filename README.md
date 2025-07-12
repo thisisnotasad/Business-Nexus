@@ -33,6 +33,12 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 - Tailwind CSS for consistent styling
 - Mobile-responsive layouts
 
+## Features (Week 2)
+
+- **Investor Dashboard**: Displays a list of entrepreneurs with name, startup name, description, and funding needed. Links to individual profiles.
+- **Entrepreneur Dashboard**: Shows collaboration requests from investors with name, profile snippet, and status.
+- **Profile Pages**: Placeholder pages for investor and entrepreneur profiles, fetching data from JSON Server.
+
 ## 🛠️ Technology Stack
 
 | Category        | Technologies                          |
@@ -120,14 +126,14 @@ business-nexus/
 6. **Test Authentication**:
 
    Open `http://localhost:5173` in your browser.
-  - **Login**: Use `investor@example.com` with `investor123` or `entrepreneur@example.com` with `entrepreneur123`.
+  - **Login**: Use `john@investor.com` with `Invest123!` or `sarah@entrepreneur.com` with `Startup456!`.
    - **Register**: Create a new user with a unique email, password, name, and role.
 
 
 | Role          | Email                   | Password        |
 |---------------|-------------------------|-----------------|
-| Investor      | investor@example.com    | investor123     |
-| Entrepreneur  | entrepreneur@example.com| entrepreneur123 |
+| Investor      | john@investor.com    |Invest123!   |
+| Entrepreneur  | sarah@entrepreneur.com| Startup456! |
 
 
 ---
@@ -141,12 +147,12 @@ business-nexus/
 ✅ Dashboard layout  
 ✅ Design system foundation  
 
-### Week 2 (Current)
+### Week 2 (Completed)
 - Investor dashboard with entrepreneur listings
 - Entrepreneur dashboard with collaboration requests
 - Profile view templates
 
-### Week 3
+### Week 3 (Current)
 - Real-time chat functionality
 - Profile enhancement features
 - UI polish and animations

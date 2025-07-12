@@ -48,14 +48,14 @@ const AppRoutes = () => {
       } />
 
       {/* Profiles (Protected) */}
-      <Route path="/profile/:role" element={
+      <Route path="/profile/:role/:id" element={
         <ProtectedRoute>
           <ProfileSelector />
         </ProtectedRoute>
       } />
 
       {/* Chat (Protected, role-based) */}
-      <Route path="/chat/:role" element={
+      <Route path="/chat/:role/:id" element={
         <ProtectedRoute>
           <Chat />
         </ProtectedRoute>

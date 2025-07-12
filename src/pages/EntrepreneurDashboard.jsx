@@ -1,6 +1,8 @@
 import React from 'react'
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import InvestorsList from '../components/ProfileLists/InvestorsList';
+import InvestorsRequests from '../components/ProfileLists/InvestorsRequests';
 
 
 const EntrepreneurDashboard = () => {
@@ -15,7 +17,7 @@ const EntrepreneurDashboard = () => {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow p-8">
       <div className="w-full flex justify-between items-center mb-2">
-        <button onClick={() => navigate('/dashboard')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 font-semibold">Go to Main Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 font-semibold">Main Dashboard</button>
         <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300 font-semibold">Logout</button>
       </div>
       <h1 className="text-3xl md:text-4xl font-bold text-green-900 mb-2 font-montserrat drop-shadow">Welcome, Entrepreneur!</h1>
@@ -40,6 +42,11 @@ const EntrepreneurDashboard = () => {
           <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">Go to Chat</button>
         </div>
       </div>
+      <div className='w-full flex justify-center items-center mt-2'>
+        {/* <InvestorsList/> */}
+      <InvestorsRequests/>
+      </div>
+      
     </div>
   )
 }

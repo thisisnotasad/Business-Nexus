@@ -5,6 +5,59 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Modern Professional Color Palette */
+  --color-primary: 47 58 78;       /* Navy base */
+  --color-primary-dark: 31 41 55;   /* Dark navy */
+  --color-secondary: 75 85 99;      /* Cool gray */
+  --color-accent: 79 70 229;        /* Vibrant indigo */
+  --color-accent-light: 99 102 241; /* Lighter indigo */
+  --color-text: 241 245 249;        /* Pure white */
+  --color-text-secondary: 209 213 219; /* Light gray */
+  --color-online: 16 185 129;       /* Emerald green */
+  --color-notification: 239 68 68;  /* Alert red */
+  --color-card: 30 41 59;           /* Dark slate */
+}
+
+/* Optional dark theme variations */
+.dark {
+  --color-primary: 30 41 59;
+  --color-primary-dark: 15 23 42;
+  --color-accent: 99 102 241;
+}
+
+:root {
+  /* Base Colors */
+  --color-primary: 30 58 138;    /* navy-800 */
+  --color-primary-dark: 30 41 59; /* slate-800 */
+  --color-secondary: 100 116 139; /* slate-500 */
+  --color-accent: 99 102 241;     /* indigo-500 */
+  --color-light: 241 245 249;     /* slate-50 */
+  --color-card: 255 255 255;      /* white */
+  
+  /* Text Colors */
+  --color-text: 15 23 42;        /* slate-900 */
+  --color-text-secondary: 71 85 105; /* slate-600 */
+  
+  /* Status Colors */
+  --color-online: 16 185 129;     /* emerald-500 */
+  --color-notification: 239 68 68; /* red-500 */
+}
+
+.dark {
+  --color-primary: 30 41 59;
+  --color-primary-dark: 15 23 42;
+  --color-light: 2 6 23;          /* slate-950 */
+  --color-card: 15 23 42;         /* slate-900 */
+  --color-text: 248 250 252;      /* slate-50 */
+  --color-text-secondary: 148 163 184; /* slate-400 */
+}
+
 /* Custom Font Faces */
 
 /* Only necessary font faces for professional use */

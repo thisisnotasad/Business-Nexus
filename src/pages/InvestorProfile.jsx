@@ -1,25 +1,38 @@
-import React from 'react'
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import api from "../utils/api";
 
-const InvestorProfile = () => {
+function InvestorProfile() {
+  const { id } = useParams();
+  const [investor, setInvestor] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchInvestor() {
+      try {
+        const response = await api.get(`/users/${id}`);
+        setInvestor(response.data);
+        console.log(response.data)
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    }
+    fetchInvestor();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!investor) return <p>User not found.</p>;
+
   return (
-    <>
-     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-
-    <div className='bg-white/90 p-6 rounded-2xl shadow-xl w-full max-w-[90vw] sm:max-w-md mx-auto mt-10 border border-blue-100 backdrop-blur-sm'>
-
-        <h1 className="text-2xl font-semibold text-gray-700">Investor Profile</h1>
-        <p className="text-gray-600">This is the investor profile page where investors can view and manage their profile information.</p>
-        {/* Add investor profile functionality here */}
-        <div className="mt-4">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
-            Edit Profile
-            </button>
-        </div>
-  </div>     
-  </div>     
-
-    </>
-  )
+    <div>
+      <h1 className="text-2xl font-bold mb-4">{investor.name}'s Profile</h1>
+      <p>Bio: {investor.bio}</p>
+      <p>Interests: {investor.interests.join(", ")}</p>
+      <p>Portfolio: {investor.portfolio.join(", ")}</p>
+    </div>
+  );
 }
 
-export default InvestorProfile
+export default InvestorProfile;
