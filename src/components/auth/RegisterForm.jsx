@@ -24,29 +24,56 @@ function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Check for existing email
-      const response = await api.get(`/users?email=${formData.email}`);
-      if (response.data.length > 0) {
+      // Check for existing email using GET /users/email/:email
+      const response = await api.get(`/users/email/${encodeURIComponent(formData.email)}`);
+      if (response.data) {
         setError("Email already registered.");
         return;
       }
 
       // Create new user
       const newUser = {
+        id: `${Math.floor(Math.random() * 1000000)}`, // Generate unique ID
         email: formData.email,
         password: formData.password,
         role: formData.role,
         name: formData.name || `User${Math.floor(Math.random() * 1000)}`,
+        bio: "", // Add default fields required by backend
+        interests: [],
+        portfolio: []
       };
       const createResponse = await api.post("/users", newUser);
 
       // Successful registration
       localStorage.setItem("currentUser", JSON.stringify(createResponse.data));
-      login(createResponse.data); // set user in context
-      navigate(`/dashboard/${newUser.role}`);
+      login(createResponse.data); // Set user in context
+      navigate(`/dashboard/${newUser.role}`, { replace: true });
     } catch (err) {
-      setError("An error occurred. Please try again.");
-      console.error(err);
+      if (err.response?.status === 404) {
+        // Email not found, proceed with registration
+        try {
+          const newUser = {
+            id: `${Math.floor(Math.random() * 1000000)}`,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+            name: formData.name || `User${Math.floor(Math.random() * 1000)}`,
+            bio: "",
+            interests: [],
+            portfolio: []
+          };
+          const createResponse = await api.post("/users", newUser);
+          localStorage.setItem("currentUser", JSON.stringify(createResponse.data));
+          login(createResponse.data);
+          navigate(`/dashboard/${newUser.role}`, { replace: true });
+        } catch (createErr) {
+          setError(createErr.response?.data?.error || "Failed to create user. Please try again.");
+          console.error('Registration Error:', createErr);
+        }
+      } else {
+        setError(err.response?.data?.error || "An error occurred. Please try again.");
+        console.error('Registration Error:', err);
+      }
     }
   };
 
@@ -56,7 +83,6 @@ function RegisterForm() {
         <span className="text-2xl font-extrabold text-blue-700 tracking-tight font-montserrat mb-1">Business Nexus</span>
         <span className="text-xs text-blue-400 font-semibold uppercase tracking-widest">Sign Up</span>
       </div>
-      {/* <h2 className="text-3xl font-bold text-green-700 mb-6 text-center font-montserrat drop-shadow">Register</h2> */}
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
       <Input
         type="text"
@@ -93,9 +119,7 @@ function RegisterForm() {
         <option value="entrepreneur">Entrepreneur</option>
         <option value="investor">Investor</option>
       </select>
-    
       <Button type="submit" className="w-full">Register</Button>
-
       <div className="mt-4 text-center">
         <span className="text-gray-600">Already have an account? </span>
         <Link to="/login" className="text-blue-600 hover:underline font-medium">Login</Link>
