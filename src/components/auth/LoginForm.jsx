@@ -18,20 +18,18 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Check if user exists
-      const response = await api.get(`/users?email=${formData.email}`);
-      const users = response.data;
-      console.log('Respone: ',response );
-      console.log('Users: ',users);
+   try {
+      // Use GET /users/email/:email
+      const response = await api.get(`/users/email/${encodeURIComponent(formData.email)}`);
+      const user = response.data;
 
-      if (users.length === 0) {
+      // Check if user exists
+      if (!user) {
         setError("No account found with this email.");
         return;
       }
 
-      const user = users[0];
-      console.log('User: ',user);
+      // Compare plain-text password
       if (user.password !== formData.password) {
         setError("Incorrect password.");
         return;
