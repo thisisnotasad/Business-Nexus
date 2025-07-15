@@ -39,6 +39,18 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 - **Entrepreneur Dashboard**: Shows collaboration requests from investors with name, profile snippet, and status.
 - **Profile Pages**: Placeholder pages for investor and entrepreneur profiles, fetching data from JSON Server.
 
+
+## Features (Week 3)
+
+- **Backend**: Node.js + MongoDB with enhanced User schema (socialLinks, experience, industry, stage, traction, teamSize). Improved PUT /users/:id for profile updates. Updated data.json with Unsplash avatar URLs. Deployed on Render.
+- **Investor Dashboard**: Concise entrepreneur cards via EntrepreneursList.
+- **Entrepreneur Dashboard**: Collaboration requests via InvestorsRequests with fixed continuous requests and reject action.
+- **Profile Pages**: Enhanced UI with sticky sidebar, social media icons (LinkedIn, Twitter, Website), glassmorphism cards, larger avatar with bounce animation, and hover effects. Fixed Edit Profile form with correct onUpdate callback and avatar URL validation.
+- **Chat**: Restricted to accepted collaboration requests.
+- **Routing**: Uses /profile/:role/:id and /chat/:role/:id with ProtectedRoute.
+- **Navigation**: Dynamic dashboard and chat links in sidebar.
+
+
 ## 🛠️ Technology Stack
 
 | Category        | Technologies                          |

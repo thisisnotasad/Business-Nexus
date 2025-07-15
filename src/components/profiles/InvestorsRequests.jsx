@@ -34,7 +34,6 @@ function InvestorsRequests() {
           return;
         }
 
-        // Fetch investor details for each request
         const investorPromises = requestsData.map(async (request) => {
           console.log("Fetching investor:", request.investorId);
           try {
@@ -57,14 +56,14 @@ function InvestorsRequests() {
         console.error("Error fetching requests:", err);
         setError(
           err.response?.status === 404
-            ? "Requests endpoint not found. Ensure JSON Server is running and db.json has a 'requests' array."
+            ? "Requests endpoint not found. Check backend server."
             : `Failed to load requests: ${err.message}`
         );
         setLoading(false);
       }
     }
-    if (currentUser) fetchRequestsAndInvestors();
-  }, [currentUser.id]); // Depend on currentUser.id to avoid re-renders
+    fetchRequestsAndInvestors();
+  }, [currentUser?.id]); // Depend on currentUser.id
 
   const handleUpdateRequest = async (requestId, newStatus) => {
     try {
@@ -73,13 +72,14 @@ function InvestorsRequests() {
       if (!request) {
         throw new Error(`Request with ID ${requestId} not found.`);
       }
-      await api.put(`/requests/${requestId}`, { ...request, status: newStatus });
-      const response = await api.get(`/requests?entrepreneurId=${currentUser.id}`);
-      setRequests(response.data);
+      const response = await api.put(`/requests/${requestId}`, { ...request, status: newStatus });
+      console.log("Updated request:", response.data);
+      const updatedRequests = await api.get(`/requests?entrepreneurId=${currentUser.id}`);
+      setRequests(updatedRequests.data);
       alert(`Request ${newStatus.toLowerCase()} successfully!`);
     } catch (err) {
-      console.error("Error updating request:", err);
-      setError(`Failed to update request: ${err.message}`);
+      console.error("Error updating request:", err.response?.data || err.message);
+      setError(`Failed to update request: ${err.response?.data?.error || err.message}`);
     }
   };
 
@@ -101,6 +101,10 @@ function InvestorsRequests() {
                 <h3 className="text-lg font-bold text-gray-800">{request.investorName}</h3>
                 <p className="text-gray-600"><strong>Bio:</strong> {investor.bio || request.profileSnippet}</p>
                 <p className="text-gray-600"><strong>Interests:</strong> {investor.interests?.join(", ") || "Not specified"}</p>
+                <p className="text-gray-600"><strong>Location:</strong> {investor.location || "Not specified"}</p>
+                {investor.avatar && (
+                  <img src={investor.avatar} alt={investor.name} className="w-16 h-16 rounded-full mt-2" />
+                )}
                 <p className="mt-2">
                   Status: <span className={
                     request.status === "Pending" ? "text-yellow-500" :
@@ -111,13 +115,13 @@ function InvestorsRequests() {
                   <div className="mt-4 flex gap-2">
                     <Button
                       onClick={() => handleUpdateRequest(request.id, "Accepted")}
-                      className="bg-green-500 hover:bg-green-600 text-white"
+                      className="bg-green-500 hover:bg-green-600 text-white transition-transform hover:scale-105"
                     >
                       Accept
                     </Button>
                     <Button
                       onClick={() => handleUpdateRequest(request.id, "Rejected")}
-                      className="bg-red-500 hover:bg-red-600 text-white"
+                      className="bg-red-500 hover:bg-red-600 text-white transition-transform hover:scale-105"
                     >
                       Reject
                     </Button>
