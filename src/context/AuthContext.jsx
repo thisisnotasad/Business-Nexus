@@ -8,16 +8,22 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await api.get(`/users?email=${email}&password=${password}`);
-      if (response.data.length > 0) {
-        const userData = response.data[0];
-        localStorage.setItem("currentUser", JSON.stringify(userData));
-        setUser(userData);
-        console.log("Logged in user:", userData);
-        return userData;
-      } else {
-        throw new Error("Invalid credentials");
+      console.log('Attempting login with email:', email); // Debug log
+      const response = await api.get(`/users/email/${encodeURIComponent(email)}`);
+      const userData = response.data;
+
+      if (!userData) {
+        throw new Error("No account found with this email.");
       }
+
+      if (userData.password !== password) {
+        throw new Error("Incorrect password.");
+      }
+
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+      setUser(userData);
+      console.log("Logged in user:", userData);
+      return userData;
     } catch (err) {
       console.error("Login error:", err);
       throw err;

@@ -24,56 +24,38 @@ function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Check for existing email using GET /users/email/:email
+      console.log('Checking email:', formData.email);
       const response = await api.get(`/users/email/${encodeURIComponent(formData.email)}`);
       if (response.data) {
         setError("Email already registered.");
         return;
       }
+    } catch (err) {
+      if (err.response?.status !== 404) {
+        setError(err.response?.data?.error || "Error checking email. Please try again.");
+        console.error('Email Check Error:', err);
+        return;
+      }
+    }
 
-      // Create new user
+    try {
       const newUser = {
-        id: `${Math.floor(Math.random() * 1000000)}`, // Generate unique ID
+        id: `${Math.floor(Math.random() * 1000000)}`,
         email: formData.email,
         password: formData.password,
         role: formData.role,
         name: formData.name || `User${Math.floor(Math.random() * 1000)}`,
-        bio: "", // Add default fields required by backend
+        bio: "",
         interests: [],
         portfolio: []
       };
+      console.log('Creating user:', newUser);
       const createResponse = await api.post("/users", newUser);
-
-      // Successful registration
-      localStorage.setItem("currentUser", JSON.stringify(createResponse.data));
-      login(createResponse.data); // Set user in context
+      await login(newUser.email, newUser.password); // Use new credentials to log in
       navigate(`/dashboard/${newUser.role}`, { replace: true });
-    } catch (err) {
-      if (err.response?.status === 404) {
-        // Email not found, proceed with registration
-        try {
-          const newUser = {
-            id: `${Math.floor(Math.random() * 1000000)}`,
-            email: formData.email,
-            password: formData.password,
-            role: formData.role,
-            name: formData.name || `User${Math.floor(Math.random() * 1000)}`,
-            bio: "",
-            interests: [],
-            portfolio: []
-          };
-          const createResponse = await api.post("/users", newUser);
-          localStorage.setItem("currentUser", JSON.stringify(createResponse.data));
-          login(createResponse.data);
-          navigate(`/dashboard/${newUser.role}`, { replace: true });
-        } catch (createErr) {
-          setError(createErr.response?.data?.error || "Failed to create user. Please try again.");
-          console.error('Registration Error:', createErr);
-        }
-      } else {
-        setError(err.response?.data?.error || "An error occurred. Please try again.");
-        console.error('Registration Error:', err);
-      }
+    } catch (createErr) {
+      setError(createErr.response?.data?.error || "Failed to create user. Please try again.");
+      console.error('Registration Error:', createErr);
     }
   };
 

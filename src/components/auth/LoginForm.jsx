@@ -9,7 +9,7 @@ function LoginForm() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const {login } = useAuth();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,31 +18,12 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-   try {
-      // Use GET /users/email/:email
-      const response = await api.get(`/users/email/${encodeURIComponent(formData.email)}`);
-      const user = response.data;
-
-      // Check if user exists
-      if (!user) {
-        setError("No account found with this email.");
-        return;
-      }
-
-      // Compare plain-text password
-      if (user.password !== formData.password) {
-        setError("Incorrect password.");
-        return;
-      }
-
-      // Successful login
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      login(user); // set user in context
-
-      navigate(`/dashboard/${user.role}`,{replace: true}); // Redirect to dashboard based on role 
+    try {
+      await login(formData.email, formData.password);
+      navigate(`/dashboard/${JSON.parse(localStorage.getItem("currentUser")).role}`, { replace: true });
     } catch (err) {
-      setError("An error occurred. Please try again.");
-      console.error(err);
+      setError(err.message || "An error occurred. Please try again.");
+      console.error('Login Error:', err);
     }
   };
 
@@ -52,7 +33,6 @@ function LoginForm() {
         <span className="text-2xl font-extrabold text-blue-700 tracking-tight font-montserrat mb-1">Business Nexus</span>
         <span className="text-xs text-blue-400 font-semibold uppercase tracking-widest">Sign In</span>
       </div>
-      {/* <h2 className="text-3xl font-bold text-blue-700 mb-6 text-center font-montserrat drop-shadow">Login</h2> */}
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
       <Input
         type="email"
