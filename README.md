@@ -5,15 +5,11 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 
 ## 📊 UI Preview
 ![Login Page](./public/screenshots/login.png)
-*Login Page*
 ![Register Page](./public/screenshots/register.png)
-*Register Page*
-![Dashboard](./public/screenshots/dashboard.png)
-*Dashboard Page*
 ![Dashboard Entrepreneur](./public/screenshots/dashboard_entrepreneur.png)
-*Dashboard Entrepreneur*
-![Dashboard Invertor](./public/screenshots/dashboard_investor.png)
-*Dashboard Investor*
+![Profile Page](./public/screenshots/profile_entrepreneur.png)
+![Dashboard](./public/screenshots/dashboard_nav.png)
+![Chat Page](./public/screenshots/chat_entrepreneur.png)
 
 
 ## ✨ Key Features
@@ -46,9 +42,17 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 - **Investor Dashboard**: Concise entrepreneur cards via EntrepreneursList.
 - **Entrepreneur Dashboard**: Collaboration requests via InvestorsRequests with fixed continuous requests and reject action.
 - **Profile Pages**: Enhanced UI with sticky sidebar, social media icons (LinkedIn, Twitter, Website), glassmorphism cards, larger avatar with bounce animation, and hover effects. Fixed Edit Profile form with correct onUpdate callback and avatar URL validation.
-- **Chat**: Restricted to accepted collaboration requests.
+- **Chat**: Two-panel layout (chat list, messages), glassmorphism, Socket.IO for real-time messaging, typing indicators, read receipts, auto-scroll, mobile toggling, and WebSocket error handling. Refactored into reusable components:
+  - `ChatList`: Renders collaborator list with avatars, names, roles, and tooltips.
+  - `ChatHeader`: Displays chat header with back button, collaborator avatar, name, and tooltip.
+  - `ChatMessages`: Shows message list, typing indicator, and auto-scroll.
+  - `ChatInput`: Manages message input and send button with typing events.
 - **Routing**: Uses /profile/:role/:id and /chat/:role/:id with ProtectedRoute.
 - **Navigation**: Dynamic dashboard and chat links in sidebar.
+- **Profile Editing**: PUT /users/:id with avatar upload, social links, experience, industry, stage, traction, teamSize, and profile description. 
+- **Error Handling**: Improved error messages and error boundaries for better user experience.
+- **Code Quality**: Improved code organization, naming conventions, and comments for better readability and maintainability.
+
 
 
 ## 🛠️ Technology Stack
@@ -65,38 +69,86 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 ## 📂 Project Structure
 
 ```bash
-business-nexus/
-├── public/
-│   ├── mock-data/
-│   │   └── db.json           # Mock user data for JSON Server
-├── src/
-│   ├── components/
-│   │   ├── auth/
-│   │   │   ├── LoginForm.jsx
-│   │   │   └── RegisterForm.jsx
-│   │   ├── common/
-│   │   │   ├── Button.jsx
-│   │   │   ├── Input.jsx
-│   │   │   └── Card.jsx
-│   ├── layouts/
-│   │   └── DashboardLayout.jsx
-│   ├── pages/
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   ├── InvestorDashboard.jsx
-│   │   ├── EntrepreneurDashboard.jsx
-│   │   ├── InvestorProfile.jsx
-│   │   ├── EntrepreneurProfile.jsx
-│   │   └── Chat.jsx
-│   ├── utils/
-│   │   └── api.js            # Axios setup for API calls
-│   ├── App.jsx               # Main app with routing
-│   ├── index.css             # Tailwind CSS setup
-│   └── main.jsx              # Entry point
-├── package.json              # Dependencies and scripts
-└── README.md                 # Project documentation
-
+|-- src
+|   |-- App.jsx
+|   |-- assets
+|   |   `-- images
+|   |       `-- logo.png
+|   |-- components
+|   |   |-- auth
+|   |   |   |-- LoginForm.jsx
+|   |   |   `-- RegisterForm.jsx
+|   |   |-- chat
+|   |   |   |-- Chat.jsx
+|   |   |   |-- ChatHeader.jsx
+|   |   |   |-- ChatInput.jsx
+|   |   |   |-- ChatList.jsx
+|   |   |   `-- ChatMessages.jsx
+|   |   |-- common
+|   |   |   |-- Button.jsx
+|   |   |   |-- Card.jsx
+|   |   |   |-- Input.jsx
+|   |   |   |-- Navbar.jsx
+|   |   |   `-- ProtectedRoute.jsx
+|   |   |-- dashboard
+|   |   |   |-- DashboardHeader.jsx
+|   |   |   `-- Sidebar.jsx
+|   |   `-- profiles
+|   |       |-- EditProfileForm.jsx
+|   |       |-- EntrepreneursList.jsx
+|   |       |-- InvestorsList.jsx
+|   |       `-- InvestorsRequests.jsx
+|   |-- context
+|   |   `-- AuthContext.jsx
+|   |-- index.css
+|   |-- layouts
+|   |   |-- DashboardLayout.jsx
+|   |   `-- DashboardLayout.module.css
+|   |-- main.jsx
+|   |-- pages
+|   |   |-- Chat.jsx
+|   |   |-- EntrepreneurDashboard.jsx
+|   |   |-- EntrepreneurProfile.jsx
+|   |   |-- InvestorDashboard.jsx
+|   |   |-- InvestorProfile.jsx
+|   |   |-- Login.jsx
+|   |   |-- NotFound.jsx
+|   |   `-- Register.jsx
+|   |-- routes
+|   |   `-- AppRoutes.jsx
+|   |-- styles
+|   |   |-- global.css
+|   |   `-- index.css
+|   `-- utils
+|       `-- api.js
+|-- tailwind.config.js
+|-- vite.config.js
+|-- README.md
+|-- eslint.config.js
+|-- index.html
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.js
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
