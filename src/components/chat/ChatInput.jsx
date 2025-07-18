@@ -24,7 +24,7 @@ function ChatInput({ newMessage, setNewMessage, handleSendMessage, selectedChatI
           value={newMessage}
           onChange={handleTyping}
           placeholder="Type a message..."
-          className="flex-1 p-2 rounded-lg border border-indigo-200 dark:border-slate-600 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 p-2 rounded-lg border border-indigo-200 dark:border-slate-600 bg-white dark:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <button
           type="submit"

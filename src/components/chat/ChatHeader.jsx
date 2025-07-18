@@ -2,6 +2,9 @@ import React from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import { Tooltip } from "react-tooltip";
 
+// Toggle debug logging
+const DEBUG = import.meta.env.VITE_DEBUG === "true";
+
 function ChatHeader({ collaborations, selectedChatId, id, setIsMobileChatOpen }) {
   const selectedCollab = collaborations.find((collab) => collab.chatId === selectedChatId);
   const collaborator = selectedCollab
@@ -10,11 +13,16 @@ function ChatHeader({ collaborations, selectedChatId, id, setIsMobileChatOpen })
       : selectedCollab.requester
     : null;
 
+  const handleBackClick = () => {
+    if (DEBUG) console.log("Back button clicked, setting isMobileChatOpen to false");
+    setIsMobileChatOpen(false);
+  };
+
   return (
     <div className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-indigo-100 dark:border-slate-700 flex items-center gap-3">
       <button
         className="md:hidden text-indigo-600 dark:text-indigo-400"
-        onClick={() => setIsMobileChatOpen(false)}
+        onClick={handleBackClick}
       >
         <FaChevronLeft size={20} />
       </button>
@@ -23,7 +31,7 @@ function ChatHeader({ collaborations, selectedChatId, id, setIsMobileChatOpen })
           collaborator?.avatar ||
           "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
         }
-        alt="Collaborator"
+        alt={collaborator?.name || "Collaborator"}
         className="w-8 h-8 rounded-full border-2 border-indigo-200 dark:border-slate-600 animate__bounceIn"
         data-tooltip-id={`collab-header-${selectedChatId}`}
         onError={(e) =>

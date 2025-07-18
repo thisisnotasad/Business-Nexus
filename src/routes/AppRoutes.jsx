@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import ErrorBoundry from '../components/error/ErrorBoundry'
 
 
 import DashboardLayout from '../layouts/DashboardLayout';
@@ -56,9 +57,11 @@ const AppRoutes = () => {
 
       {/* Chat (Protected, role-based) */}
       <Route path="/chat/:role/:id" element={
-        <ProtectedRoute>
-          <Chat />
-        </ProtectedRoute>
+        <ErrorBoundry>
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        </ErrorBoundry>
       } />
 
       {/* Main dashboard layout (optional, if you want a layout wrapper) */}
