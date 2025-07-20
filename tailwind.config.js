@@ -21,7 +21,10 @@ module.exports = {
           "70%": { transform: "scale(0.95)" },
           "100%": { transform: "scale(1)" }
         }
-      }
+      },
+      fontFamily: {
+        montserrat: ["Montserrat", "sans-serif"],
+      },
     }
   },
   plugins: []

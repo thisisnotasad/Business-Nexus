@@ -34,13 +34,13 @@ function Sidebar({ onLogout, userRole, user }) {
       badge: 3
     },
     ...(userRole === 'investor' ? [{
-      path: '/discover',
+      path: `/discover/investor/${user?.id}`,
       icon: <HiOutlineUserGroup className="w-5 h-5" />,
       label: "Discover"
     }] : [{
-      path: '/pitch',
+      path: `/requests/entrepreneur/${user?.id}`,
       icon: <HiOutlineLightBulb className="w-5 h-5" />,
-      label: "My Pitch"
+      label: "Requests"
     }]),
     {
       path: '/settings',

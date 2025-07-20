@@ -1,7 +1,6 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import InvestorsRequests from "../components/profiles/InvestorsRequests";
 import { FaBuilding, FaLightbulb, FaComments } from "react-icons/fa";
 
 const EntrepreneurDashboard = () => {
@@ -75,10 +74,6 @@ const EntrepreneurDashboard = () => {
             Go to Chat
           </button>
         </div>
-      </div>
-      <div className="w-full mt-8">
-        <h2 className="text-2xl font-semibold text-slate-800 mb-4 text-center">Investor Requests</h2>
-        <InvestorsRequests />
       </div>
     </div>
   );

@@ -1,137 +1,150 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../utils/api";
-import Card from "../common/Card";
-import Button from "../common/Button";
+import { io } from "socket.io-client";
+
+const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
 function InvestorsRequests() {
   const { user } = useAuth();
-  const currentUser = useMemo(() => user || JSON.parse(localStorage.getItem("currentUser")), [user]);
   const [requests, setRequests] = useState([]);
-  const [investorDetails, setInvestorDetails] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
+  const socketUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_LOCAL_API_URL || "http://localhost:3000").trim();
+  const socket = io(socketUrl, {
+    query: { userId: user.id },
+  });
 
-  useEffect(() => {
-    async function fetchRequestsAndInvestors() {
-      if (!currentUser || !currentUser.id) {
-        setError("User not logged in or invalid user data.");
-        setLoading(false);
-        console.error("No currentUser or currentUser.id:", currentUser);
-        return;
-      }
-
-      try {
-        console.log("Fetching requests for entrepreneurId:", currentUser.id);
-        const response = await api.get(`/requests?entrepreneurId=${currentUser.id}`);
-        const requestsData = response.data;
-        console.log("Requests fetched:", requestsData);
-        setRequests(requestsData);
-
-        if (requestsData.length === 0) {
-          console.log("No requests found for entrepreneurId:", currentUser.id);
-          setLoading(false);
-          return;
-        }
-
-        const investorPromises = requestsData.map(async (request) => {
-          console.log("Fetching investor:", request.investorId);
-          try {
-            const investorResponse = await api.get(`/users/${request.investorId}`);
-            return { id: request.investorId, ...investorResponse.data };
-          } catch (err) {
-            console.error(`Failed to fetch investor ${request.investorId}:`, err);
-            return { id: request.investorId, name: "Unknown Investor", bio: "N/A", interests: [] };
-          }
-        });
-        const investors = await Promise.all(investorPromises);
-        const investorMap = investors.reduce((map, investor) => {
-          map[investor.id] = investor;
-          return map;
-        }, {});
-        setInvestorDetails(investorMap);
-
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching requests:", err);
-        setError(
-          err.response?.status === 404
-            ? "Requests endpoint not found. Check backend server."
-            : `Failed to load requests: ${err.message}`
-        );
-        setLoading(false);
-      }
-    }
-    fetchRequestsAndInvestors();
-  }, [currentUser?.id]); // Depend on currentUser.id
-
-  const handleUpdateRequest = async (requestId, newStatus) => {
+  const fetchRequests = async () => {
     try {
-      console.log("Updating request:", requestId, newStatus);
-      const request = requests.find((r) => r.id === requestId);
-      if (!request) {
-        throw new Error(`Request with ID ${requestId} not found.`);
+      if (DEBUG) console.log("Fetching requests with params:", { userId: user.id, status: "pending" });
+      const response = await api.get("/requests", {
+        params: { userId: user.id, status: "pending" },
+      });
+      if (DEBUG) {
+        console.log("API response:", JSON.stringify(response, null, 2));
+        console.log("Fetched pending requests:", JSON.stringify(response.data, null, 2));
       }
-      const response = await api.put(`/requests/${requestId}`, { ...request, status: newStatus });
-      console.log("Updated request:", response.data);
-      const updatedRequests = await api.get(`/requests?entrepreneurId=${currentUser.id}`);
-      setRequests(updatedRequests.data);
-      alert(`Request ${newStatus.toLowerCase()} successfully!`);
+      setRequests(response.data || []);
+      setError(null);
     } catch (err) {
-      console.error("Error updating request:", err.response?.data || err.message);
-      setError(`Failed to update request: ${err.response?.data?.error || err.message}`);
+      console.error("Error fetching requests:", err.message, err.response?.data);
+      setError("Failed to load requests. Please try again.");
+      setRequests([]);
     }
   };
 
-  if (!currentUser) return <p className="text-red-500 text-center">Please log in.</p>;
-  if (loading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  useEffect(() => {
+    if (!user?.id) {
+      if (DEBUG) console.log("No user ID, skipping fetch");
+      return;
+    }
+
+    fetchRequests();
+
+    socket.on("connect", () => {
+      if (DEBUG) console.log("Socket connected for InvestorsRequests:", socket.id);
+    });
+
+    socket.on("requestUpdated", ({ userId: updatedUserId }) => {
+      if (updatedUserId === user.id) {
+        if (DEBUG) console.log("Request updated, refetching requests for user:", user.id);
+        fetchRequests();
+      }
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Socket connection error in InvestorsRequests:", err.message);
+    });
+
+    return () => {
+      socket.off("requestUpdated");
+      socket.off("connect");
+      socket.off("connect_error");
+    };
+  }, [user.id]);
+
+  const handleAccept = async (requestId) => {
+    try {
+      if (DEBUG) console.log("Accepting request:", requestId);
+      await api.put(`/requests/${requestId}/accept`, { id: user.id });
+      if (DEBUG) console.log("Request accepted:", requestId);
+    } catch (err) {
+      console.error("Error accepting request:", err.message, err.response?.data);
+      setError("Failed to accept request. Please try again.");
+    }
+  };
+
+  const handleReject = async (requestId) => {
+    try {
+      if (DEBUG) console.log("Rejecting request:", requestId);
+      await api.put(`/requests/${requestId}/reject`, { id: user.id });
+      if (DEBUG) console.log("Request rejected:", requestId);
+    } catch (err) {
+      console.error("Error rejecting request:", err.message, err.response?.data);
+      setError("Failed to reject request. Please try again.");
+    }
+  };
 
   return (
-    <div className="w-full">
-      <h2 className="text-xl font-semibold text-green-800 mb-4">Collaboration Requests</h2>
-      {requests.length === 0 ? (
-        <p className="text-gray-500">No collaboration requests yet.</p>
-      ) : (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-          {requests.map((request) => {
-            const investor = investorDetails[request.investorId] || {};
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
+        Investor Requests
+      </h2>
+      <div className="space-y-4">
+        {error && (
+          <div className="bg-red-100 text-red-700 p-4 rounded-lg shadow-sm">
+            {error}
+          </div>
+        )}
+        {requests.length === 0 ? (
+          <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
+            <p className="text-gray-500 dark:text-gray-400 text-lg">
+              No pending requests at the moment.
+            </p>
+          </div>
+        ) : (
+          requests.map((request) => {
+            const collaborator = request.investorId === user.id ? request.entrepreneur : request.investor;
             return (
-              <Card key={request.id} className="hover:shadow-lg transition-transform hover:scale-105">
-                <h3 className="text-lg font-bold text-gray-800">{request.investorName}</h3>
-                <p className="text-gray-600"><strong>Bio:</strong> {investor.bio || request.profileSnippet}</p>
-                <p className="text-gray-600"><strong>Interests:</strong> {investor.interests?.join(", ") || "Not specified"}</p>
-                <p className="text-gray-600"><strong>Location:</strong> {investor.location || "Not specified"}</p>
-                {investor.avatar && (
-                  <img src={investor.avatar} alt={investor.name} className="w-16 h-16 rounded-full mt-2" />
-                )}
-                <p className="mt-2">
-                  Status: <span className={
-                    request.status === "Pending" ? "text-yellow-500" :
-                    request.status === "Accepted" ? "text-green-500" : "text-red-500"
-                  }>{request.status}</span>
-                </p>
-                {request.status === "Pending" && (
-                  <div className="mt-4 flex gap-2">
-                    <Button
-                      onClick={() => handleUpdateRequest(request.id, "Accepted")}
-                      className="bg-green-500 hover:bg-green-600 text-white transition-transform hover:scale-105"
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      onClick={() => handleUpdateRequest(request.id, "Rejected")}
-                      className="bg-red-500 hover:bg-red-600 text-white transition-transform hover:scale-105"
-                    >
-                      Reject
-                    </Button>
-                  </div>
-                )}
-              </Card>
+              <div
+                key={request.id}
+                className="flex items-center bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <img
+                  src={collaborator.avatar}
+                  alt={collaborator.name}
+                  className="w-12 h-12 rounded-full mr-4 object-cover"
+                />
+                <div className="flex-1">
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    {collaborator.name}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                    {collaborator.role}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    {request.profileSnippet}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleAccept(request.id)}
+                    className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors duration-200"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleReject(request.id)}
+                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors duration-200"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
     </div>
   );
 }
