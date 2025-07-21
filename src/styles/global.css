@@ -1,18 +1,69 @@
-/* src/styles/global.css */
-/* Reset some default styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}   
+/* Base Tailwind directives for styling */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-
-/* Cstom scrollbar for chat window */
-::-webkit-scrollbar {
-  width: 8px;
+/* Define custom CSS variables for consistent theming */
+@layer base {
+  :root {
+    --primary: #2dd4bf; /* Teal-400 as primary color */
+    --secondary: #9333ea; /* Purple-600 as secondary color */
+    --background: #f3f4f6; /* Light gray background */
+    --dark-background: #1e293b; /* Dark slate background */
+    --text: #1e293b; /* Dark text for light mode */
+    --dark-text: #f9fafb; /* Light text for dark mode */
+  }
+  [data-theme="dark"] {
+    --background: #1e293b; /* Dark mode background */
+    --dark-background: #f3f4f6; /* Light mode background in dark theme */
+    --text: #f9fafb; /* Light text in dark mode */
+    --dark-text: #1e293b; /* Dark text in dark mode */
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #9CA3AF;
-  border-radius: 4px;
+/* Styling for message bubble tails (sent messages) */
+.message-bubble-sent::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-bottom: 8px solid var(--primary);
+  border-right: 8px solid transparent;
+}
+
+.dark .message-bubble-sent::after {
+  border-bottom-color: #0d9488; /* Darker teal for dark mode */
+}
+
+/* Styling for message bubble tails (received messages) */
+.message-bubble-received::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #d1d5db; /* Light gray for received */
+  border-left: 8px solid transparent;
+}
+
+.dark .message-bubble-received::after {
+  border-bottom-color: #475569; /* Darker gray for dark mode */
+}
+
+/* Utility classes for components */
+@layer components {
+  .app-container {
+    @apply min-h-screen bg-[var(--background)] dark:bg-[var(--dark-background)] text-[var(--text)] dark:text-[var(--dark-text)] transition-colors duration-300;
+  }
+  .card {
+    @apply bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-lg rounded-lg p-6;
+  }
+  .btn-primary {
+    @apply bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors font-montserrat;
+  }
 }

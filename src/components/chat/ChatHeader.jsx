@@ -11,14 +11,15 @@ function ChatHeader({ collaborations, selectedChatId, id, role, setIsMobileChatO
   if (!collaborations || !selectedChatId) {
     if (DEBUG) console.log("ChatHeader: Missing collaborations or selectedChatId", { collaborations, selectedChatId });
     return (
-      <div className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-teal-100 dark:border-slate-700 flex items-center gap-3">
+      <div className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-teal-100 dark:border-slate-700 flex items-center gap-3 sticky top-0 z-10">
         <button
-          className="md:hidden text-teal-600 dark:text-teal-400 hover:text-teal-700 transition-colors"
+          className="text-teal-600 dark:text-teal-400 hover:text-teal-700 transition-colors" // Removed md:hidden
           onClick={() => {
             if (DEBUG) console.log("Back button clicked, navigating to chat list");
             setIsMobileChatOpen(false);
             navigate(`/chat/${role}/${id}`);
           }}
+          aria-label="Back to chat list"
         >
           <FaChevronLeft size={20} />
         </button>
@@ -35,14 +36,15 @@ function ChatHeader({ collaborations, selectedChatId, id, role, setIsMobileChatO
     : null;
 
   return (
-    <div className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-teal-100 dark:border-slate-700 flex items-center gap-3">
+    <div className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-teal-100 dark:border-slate-700 flex items-center gap-3 sticky top-0 z-10">
       <button
-        className="md:hidden text-teal-600 dark:text-teal-400 hover:text-teal-700 transition-colors"
+        className="text-teal-600 dark:text-teal-400 hover:text-teal-700 transition-colors" // Removed md:hidden
         onClick={() => {
           if (DEBUG) console.log("Back button clicked, navigating to chat list");
           setIsMobileChatOpen(false);
           navigate(`/chat/${role}/${id}`);
         }}
+        aria-label="Back to chat list"
       >
         <FaChevronLeft size={20} />
       </button>
@@ -51,7 +53,7 @@ function ChatHeader({ collaborations, selectedChatId, id, role, setIsMobileChatO
           collaborator?.avatar ||
           "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"
         }
-        alt={collaborator?.name || "Collaborator"}
+        alt={collaborator?.name || "Collaborator avatar"}
         className="w-10 h-10 rounded-full border-2 border-teal-200 dark:border-slate-600 animate__bounceIn"
         data-tooltip-id={`collab-header-${selectedChatId}`}
         onError={(e) =>

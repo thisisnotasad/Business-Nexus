@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../utils/api";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
+import SkeletonLoader from "../common/SkeletonLoader";
 
 const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
@@ -15,6 +16,7 @@ function Chat({ collaborations, selectedChatId, setIsMobileChatOpen, socket, id,
   const [newMessage, setNewMessage] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null); // Added error state
   const messagesEndRef = useRef(null);
 
   const fetchMessages = async () => {
@@ -26,12 +28,18 @@ function Chat({ collaborations, selectedChatId, setIsMobileChatOpen, socket, id,
       });
       if (DEBUG) console.log("Fetched messages:", JSON.stringify(response.data, null, 2));
       setMessages(response.data || []);
+      setError(null); // Clear error on success
     } catch (err) {
       console.error("Error fetching messages:", err.message, err.response?.data);
-      setMessages([]);
+      setError("Failed to load messages. Network issue or server error. Please retry.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const retryFetchMessages = () => {
+    setError(null); // Clear error to show loading state again
+    fetchMessages();
   };
 
   useEffect(() => {
@@ -83,34 +91,63 @@ function Chat({ collaborations, selectedChatId, setIsMobileChatOpen, socket, id,
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
+  const handleSendMessage = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!newMessage.trim()) return;
 
-    try {
-      const message = {
-        id: Date.now().toString(), // Generate ID client-side
-        chatId: selectedChatId,
-        senderId: id,
-        senderName: user?.name || "Unknown User",
-        text: newMessage, // Use text instead of content
-        content: newMessage, // Keep content for backward compatibility
-        timestamp: new Date().toISOString(),
-      };
-      if (DEBUG) console.log("Sending message:", JSON.stringify(message, null, 2));
-      await api.post("/messages", message);
-      socket.emit("message", message);
-      setNewMessage("");
-    } catch (err) {
-      console.error("Error sending message:", err.message, err.response?.data);
-      alert("Failed to send message. Please check the server and try again.");
-    }
-  };
+      try {
+        const message = {
+          id: Date.now().toString(), // Generate ID client-side
+          chatId: selectedChatId,
+          senderId: id,
+          senderName: user?.name || "Unknown User",
+          text: newMessage,
+          content: newMessage, // Temporary fallback
+          timestamp: new Date().toISOString(),
+        };
+        if (DEBUG) console.log("Sending message:", JSON.stringify(message, null, 2));
+        await api.post("/messages", message);
+        socket.emit("message", message);
+        setNewMessage("");
+      } catch (err) {
+        console.error("Error sending message:", err.message, err.response?.data);
+        alert("Failed to send message. Please check the server and try again.");
+      }
+    },
+    [newMessage, selectedChatId, id, user?.name, socket, api]
+  );
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-lg justify-center items-center">
-        <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 font-montserrat">Loading messages...</p>
+      <div className="flex-1 flex flex-col bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-lg">
+        <ChatHeader
+          collaborations={collaborations}
+          selectedChatId={selectedChatId}
+          id={id}
+          role={role}
+          setIsMobileChatOpen={setIsMobileChatOpen}
+        />
+        <div className="flex-1 p-4 overflow-y-auto">
+          {[...Array(5)].map((_, index) => (
+            <SkeletonLoader key={index} type="message" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex flex-col bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-lg flex-col items-center justify-center p-6">
+        <p className="text-center text-gray-600 dark:text-gray-400 font-montserrat mb-4">{error}</p>
+        <button
+          onClick={retryFetchMessages}
+          className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors font-montserrat"
+          aria-label="Retry loading messages"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -124,24 +161,26 @@ function Chat({ collaborations, selectedChatId, setIsMobileChatOpen, socket, id,
         role={role}
         setIsMobileChatOpen={setIsMobileChatOpen}
       />
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 p-4 overflow-y-auto" role="log" aria-live="polite">
         {messages.length === 0 ? (
-          <p className="text-center text-slate-500 dark:text-slate-400 font-montserrat">No messages yet. Start the conversation!</p>
+          <p className="text-center text-gray-600 dark:text-gray-400 font-montserrat">No messages yet. Start the conversation!</p>
         ) : (
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`mb-4 flex ${msg.senderId === id ? "justify-end" : "justify-start"}`}
+              className={`mb-4 flex ${msg.senderId === id ? "justify-end" : "justify-start"} animate__animated animate__fadeIn`}
+              role="listitem"
+              aria-label={`${msg.senderId === id ? "Sent" : "Received"} message at ${new Date(msg.timestamp).toLocaleTimeString()}`}
             >
               <div
                 className={`
-                  max-w-[70%] p-3 rounded-lg shadow-sm
-                  ${msg.senderId === id ? "bg-teal-100 text-slate-800" : "bg-indigo-700 text-slate-800"}
-                  dark:${msg.senderId === id ? "bg-teal-900/50 dark:text-slate-100" : "bg-indigo-900/50 dark:text-slate-100"}
+                  max-w-[70%] p-3 rounded-lg shadow-md relative
+                  ${msg.senderId === id ? "bg-teal-300 text-gray-900 message-bubble-sent" : "bg-gray-300 text-gray-900 message-bubble-received"}
+                  dark:${msg.senderId === id ? "bg-teal-700 text-white message-bubble-sent" : "bg-slate-600 text-white message-bubble-received"}
                 `}
               >
-                <p className="text-sm font-montserrat">{msg.content || msg.text}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-sm font-montserrat">{msg.text}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   {new Date(msg.timestamp).toLocaleTimeString()}
                 </p>
               </div>
@@ -150,7 +189,7 @@ function Chat({ collaborations, selectedChatId, setIsMobileChatOpen, socket, id,
         )}
         <div ref={messagesEndRef} />
         {typingUsers.length > 0 && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 italic font-montserrat">
+          <p className="text-xs text-gray-600 dark:text-gray-400 italic font-montserrat">
             {typingUsers.join(", ")} {typingUsers.length > 1 ? "are" : "is"} typing...
           </p>
         )}

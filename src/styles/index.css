@@ -1,106 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'); */
 @import "./global.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  /* Modern Professional Color Palette */
-  --color-primary: 47 58 78;       /* Navy base */
-  --color-primary-dark: 31 41 55;   /* Dark navy */
-  --color-secondary: 75 85 99;      /* Cool gray */
-  --color-accent: 79 70 229;        /* Vibrant indigo */
-  --color-accent-light: 99 102 241; /* Lighter indigo */
-  --color-text: 241 245 249;        /* Pure white */
-  --color-text-secondary: 209 213 219; /* Light gray */
-  --color-online: 16 185 129;       /* Emerald green */
-  --color-notification: 239 68 68;  /* Alert red */
-  --color-card: 30 41 59;           /* Dark slate */
-}
-
-/* Optional dark theme variations */
-.dark {
-  --color-primary: 30 41 59;
-  --color-primary-dark: 15 23 42;
-  --color-accent: 99 102 241;
-}
-
-:root {
-  /* Base Colors */
-  --color-primary: 30 58 138;    /* navy-800 */
-  --color-primary-dark: 30 41 59; /* slate-800 */
-  --color-secondary: 100 116 139; /* slate-500 */
-  --color-accent: 99 102 241;     /* indigo-500 */
-  --color-light: 241 245 249;     /* slate-50 */
-  --color-card: 255 255 255;      /* white */
-  
-  /* Text Colors */
-  --color-text: 15 23 42;        /* slate-900 */
-  --color-text-secondary: 71 85 105; /* slate-600 */
-  
-  /* Status Colors */
-  --color-online: 16 185 129;     /* emerald-500 */
-  --color-notification: 239 68 68; /* red-500 */
-}
-
-.dark {
-  --color-primary: 30 41 59;
-  --color-primary-dark: 15 23 42;
-  --color-light: 2 6 23;          /* slate-950 */
-  --color-card: 15 23 42;         /* slate-900 */
-  --color-text: 248 250 252;      /* slate-50 */
-  --color-text-secondary: 148 163 184; /* slate-400 */
-}
-
-/* Custom Font Faces */
-
-/* Only necessary font faces for professional use */
-@font-face {
-  font-family: 'Montserrat';
-  src: url('/assets/fonts/Montserrat-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Poppins';
-  src: url('/assets/fonts/Poppins-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Roboto';
-  src: url('/assets/fonts/Roboto-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-
-/* Professional font usage */
-body {
-  font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-}
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', Arial, Helvetica, sans-serif;
-  font-weight: 400;
-}
-h1 {
-  font-family: 'Roboto', Arial, Helvetica, sans-serif;
-  font-weight: 700;
-  letter-spacing: -1px;
-}
-nav, .navbar, .navigation {
-  font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.5px;
-}
-
-body {
+/* src/styles/global.css */
+/* Reset some default styles */
+* {
   margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #F3F4F6;
+  padding: 0;
+  box-sizing: border-box;
+}   
+
+
+/* Cstom scrollbar for chat window */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9CA3AF;
+  border-radius: 4px;
 }

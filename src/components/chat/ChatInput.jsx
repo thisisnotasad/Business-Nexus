@@ -1,13 +1,26 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import { FaPaperPlane } from "react-icons/fa";
+import { debounce } from "../../utils/debounce";
 
 function ChatInput({ newMessage, setNewMessage, handleSendMessage, selectedChatId, socket }) {
-  const typingTimeoutRef = useRef(null);
+const typingTimeoutRef = useRef(null);
+
+  // Debounce the typing event to limit socket emissions to once every 300ms
+  const debouncedTyping = useCallback(
+    debounce(() => {
+      socket.emit("typing", { chatId: selectedChatId });
+    }, 300),
+    [socket, selectedChatId]
+  );
 
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
-    socket.emit("typing", { chatId: selectedChatId });
+    debouncedTyping(); // Use debounced function for typing event
+
+    // Clear any existing stopTyping timeout
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    // Emit stopTyping after 2 seconds of inactivity
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit("stopTyping", { chatId: selectedChatId });
     }, 2000);

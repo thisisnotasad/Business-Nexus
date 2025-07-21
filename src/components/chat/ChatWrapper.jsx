@@ -5,6 +5,7 @@ import api from "../../utils/api";
 import { io } from "socket.io-client";
 import ChatList from "./ChatList";
 import Chat from "./Chat";
+import SkeletonLoader from "../common/SkeletonLoader";
 
 const DEBUG = import.meta.env.VITE_DEBUG === "true";
 
@@ -36,11 +37,15 @@ function ChatWrapper() {
       setError(null);
     } catch (err) {
       console.error("Error fetching collaborations:", err.message, err.response?.data);
-      setError("Failed to load chats. Please try again.");
-      setCollaborations([]);
+      setError("Failed to load chats. Network issue or server error. Please retry.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const retryFetchCollaborations = () => {
+    setError(null); // Clear error to show loading state again
+    fetchCollaborations();
   };
 
   useEffect(() => {
@@ -79,8 +84,27 @@ function ChatWrapper() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-[80vh] bg-gradient-to-br from-indigo-50 to-teal-50 dark:from-slate-900 dark:to-slate-800 shadow-xl justify-center items-center">
-        <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 font-montserrat">Loading chats...</p>
+      <div className="flex min-h-[80vh] bg-gradient-to-br from-indigo-50 to-teal-50 dark:from-slate-900 dark:to-slate-800 shadow-xl">
+        <div className="w-full md:w-1/3">
+          {[...Array(5)].map((_, index) => (
+            <SkeletonLoader key={index} type="chat" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-[80vh] bg-gradient-to-br from-indigo-50 to-teal-50 dark:from-slate-900 dark:to-slate-800 shadow-xl flex-col items-center justify-center p-6">
+        <p className="text-center text-gray-600 dark:text-gray-400 font-montserrat mb-4">{error}</p>
+        <button
+          onClick={retryFetchCollaborations}
+          className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors font-montserrat"
+          aria-label="Retry loading chats"
+        >
+          Retry
+        </button>
       </div>
     );
   }
