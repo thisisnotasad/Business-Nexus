@@ -1,120 +1,26 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaLinkedin, FaTwitter, FaGlobe, FaUser, FaTachometerAlt, FaSignOutAlt, FaChevronDown } from "react-icons/fa";
-
 function DashboardHeader({ user }) {
-  const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  const bgGradient = user?.role === "investor" 
+    ? "from-orange-400 to-amber-400" 
+    : "from-blue-400 to-cyan-400";
 
   return (
-    <header className="bg-white dark:bg-slate-900 bg-opacity-90 backdrop-blur-md p-4 sm:p-6 rounded-2xl shadow-xl mb-6 flex items-center justify-between border border-indigo-100/50 dark:border-slate-800/50 transition-all duration-300 animate__fadeIn">
-      <div className="flex items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+    <header className={`bg-gradient-to-r ${bgGradient} bg-opacity-90 backdrop-blur-md p-4 sm:p-6 rounded-2xl shadow-lg mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between border border-white/20 transition-all duration-300`}>
+      <div className="flex items-center gap-4 mb-4 sm:mb-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">
           {user?.role === "investor" ? "Investor Dashboard" : "Entrepreneur Dashboard"}
         </h1>
       </div>
-
-      {user && (
-        <div className="hidden relative ">
-          <button
-            onClick={toggleDropdown}
-            className="flex items-center gap-3 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg shadow-sm border border-indigo-100/50 dark:border-slate-700/50 hover:shadow-md transition-all duration-200"
-          >
-            <div className="relative">
-              <img
-                src={user.avatar || "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"}
-                alt={user.name}
-                className="h-10 w-10 rounded-full border-2 border-indigo-200 dark:border-slate-600 animate__bounceIn"
-                onError={(e) => (e.target.src = "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150")}
-              />
-              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-teal-500 rounded-full border-2 border-white dark:border-slate-800"></span>
-            </div>
-            <div className="hidden sm:block">
-              <p className="font-medium text-slate-800 dark:text-slate-100">{user.name}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{user.role}</p>
-            </div>
-            <FaChevronDown className="text-indigo-600 dark:text-indigo-400" size={16} />
-          </button>
-
-          {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-indigo-100/50 dark:border-slate-700/50 animate__fadeIn z-50">
-              <div className="p-3">
-                <div className="flex items-center gap-2 p-2 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded transition-colors">
-                  <img
-                    src={user.avatar || "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150"}
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full"
-                    onError={(e) => (e.target.src = "https://images.unsplash.com/photo-1502685104226-ee32379f453f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150")}
-                  />
-                  <div>
-                    <p className="font-medium text-sm text-slate-800 dark:text-slate-100">{user.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{user.email}</p>
-                  </div>
-                </div>
-                <hr className="border-indigo-100 dark:border-slate-700 my-2" />
-                <button
-                  onClick={() => navigate(`/dashboard/${user.role}`)}
-                  className="w-full flex items-center gap-2 p-2 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded transition-colors"
-                >
-                  <FaTachometerAlt size={16} /> Dashboard
-                </button>
-                <button
-                  onClick={() => navigate(`/profile/${user.role}/${user.id}`)}
-                  className="w-full flex items-center gap-2 p-2 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded transition-colors"
-                >
-                  <FaUser size={16} /> Profile
-                </button>
-                <div className="flex gap-3 p-2">
-                  {user.socialLinks?.linkedin && (
-                    <a
-                      href={user.socialLinks.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
-                    >
-                      <FaLinkedin size={20} />
-                    </a>
-                  )}
-                  {user.socialLinks?.twitter && (
-                    <a
-                      href={user.socialLinks.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
-                    >
-                      <FaTwitter size={20} />
-                    </a>
-                  )}
-                  {user.socialLinks?.website && (
-                    <a
-                      href={user.socialLinks.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-600 dark:text-slate-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
-                    >
-                      <FaGlobe size={20} />
-                    </a>
-                  )}
-                </div>
-                <hr className="border-indigo-100 dark:border-slate-700 my-2" />
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 p-2 text-red-500 dark:text-red-400 hover:bg-indigo-50 dark:hover:bg-slate-700 rounded transition-colors"
-                >
-                  <FaSignOutAlt size={16} /> Logout
-                </button>
-              </div>
-            </div>
-          )}
+      <div className="flex items-center gap-3">
+        <div className="bg-white/20 px-4 py-2 rounded-full text-white text-sm font-medium">
+          <span className="hidden sm:inline">Last login: </span>
+          Today, 10:42 AM
         </div>
-      )}
+        <button className="bg-white/20 hover:bg-white/30 p-2 rounded-full text-white transition-colors duration-200">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+        </button>
+      </div>
     </header>
   );
 }

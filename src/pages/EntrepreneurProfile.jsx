@@ -111,7 +111,7 @@ function EntrepreneurProfile() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg p-4 hidden md:block sticky top-0 h-screen">
+      <div className="w-64 bg-white h-screen shadow-lg p-4 hidden md:block sticky top-0 h-screen">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <img

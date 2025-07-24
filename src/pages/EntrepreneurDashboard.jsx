@@ -8,12 +8,13 @@ const EntrepreneurDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    console.log("Logging out...");
     logout();
-    navigate("/login");
   };
 
+
   return (
-    <div className="min-h-[60vh] flex flex-col bg-gradient-to-br from-indigo-50 to-teal-50 rounded-xl shadow-xl p-8 animate__fadeIn">
+    <div className="min-h-[100vh] flex flex-col bg-gradient-to-br from-indigo-50 to-teal-50 rounded-xl shadow-xl p-8 animate__fadeIn">
       <div className="w-full flex justify-between items-center mb-6">
         <button
           onClick={() => navigate("/dashboard")}

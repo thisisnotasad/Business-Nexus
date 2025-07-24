@@ -13,6 +13,7 @@ import EntrepreneurProfile from "../pages/EntrepreneurProfile";
 import ChatWrapper from "../components/chat/ChatWrapper";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import NotFound from "../pages/NotFound";
+import Homepage from '../pages/Homepage';
 import { useParams } from "react-router-dom";
 
 // DashboardSelector and ProfileSelector wrappers
@@ -34,7 +35,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Auth */}
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 

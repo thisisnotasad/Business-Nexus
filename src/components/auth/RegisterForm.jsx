@@ -13,6 +13,7 @@ function RegisterForm() {
     name: "",
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -23,8 +24,14 @@ function RegisterForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    setError("");
+
     try {
-      console.log('Checking email:', formData.email);
+      // Email check
       const response = await api.get(`/users/email/${encodeURIComponent(formData.email)}`);
       if (response.data) {
         setError("Email already registered.");
@@ -39,6 +46,7 @@ function RegisterForm() {
     }
 
     try {
+      // User creation
       const newUser = {
         id: `${Math.floor(Math.random() * 1000000)}`,
         email: formData.email,
@@ -49,13 +57,15 @@ function RegisterForm() {
         interests: [],
         portfolio: []
       };
-      console.log('Creating user:', newUser);
-      const createResponse = await api.post("/users", newUser);
-      await login(newUser.email, newUser.password); // Use new credentials to log in
+      
+      await api.post("/users", newUser);
+      await login(newUser.email, newUser.password);
       navigate(`/dashboard/${newUser.role}`, { replace: true });
     } catch (createErr) {
       setError(createErr.response?.data?.error || "Failed to create user. Please try again.");
       console.error('Registration Error:', createErr);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,6 +83,7 @@ function RegisterForm() {
         onChange={handleChange}
         placeholder="Full Name"
         className="mb-4"
+        disabled={isLoading}
       />
       <Input
         type="email"
@@ -82,6 +93,7 @@ function RegisterForm() {
         placeholder="Email"
         className="mb-4"
         required
+        disabled={isLoading}
       />
       <Input
         type="password"
@@ -91,20 +103,42 @@ function RegisterForm() {
         placeholder="Password"
         className="mb-4"
         required
+        disabled={isLoading}
       />
       <select
         name="role"
         value={formData.role}
         onChange={handleChange}
         className="w-full p-2 mb-4 border rounded"
+        disabled={isLoading}
       >
         <option value="entrepreneur">Entrepreneur</option>
         <option value="investor">Investor</option>
       </select>
-      <Button type="submit" className="w-full">Register</Button>
+      <Button 
+        type="submit" 
+        className="w-full"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <span className="flex items-center justify-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Creating account...
+          </span>
+        ) : "Register"}
+      </Button>
       <div className="mt-4 text-center">
         <span className="text-gray-600">Already have an account? </span>
-        <Link to="/login" className="text-blue-600 hover:underline font-medium">Login</Link>
+        <Link 
+          to="/login" 
+          className="text-blue-600 hover:underline font-medium"
+          tabIndex={isLoading ? -1 : 0}
+        >
+          Login
+        </Link>
       </div>
     </form>
   );

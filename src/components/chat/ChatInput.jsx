@@ -1,11 +1,12 @@
 import React, { useRef, useCallback } from "react";
-import { FaPaperPlane } from "react-icons/fa";
+import { FiSend, FiSmile, FiPaperclip } from "react-icons/fi";
 import { debounce } from "../../utils/debounce";
 
 function ChatInput({ newMessage, setNewMessage, handleSendMessage, selectedChatId, socket }) {
-const typingTimeoutRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const inputRef = useRef(null);
 
-  // Debounce the typing event to limit socket emissions to once every 300ms
+  // Debounce the typing event to limit socket emissions
   const debouncedTyping = useCallback(
     debounce(() => {
       socket.emit("typing", { chatId: selectedChatId });
@@ -15,39 +16,75 @@ const typingTimeoutRef = useRef(null);
 
   const handleTyping = (e) => {
     setNewMessage(e.target.value);
-    debouncedTyping(); // Use debounced function for typing event
+    debouncedTyping();
 
-    // Clear any existing stopTyping timeout
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
-    // Emit stopTyping after 2 seconds of inactivity
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit("stopTyping", { chatId: selectedChatId });
     }, 2000);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(e);
+    }
+  };
+
   return (
     <form
       onSubmit={handleSendMessage}
-      className="p-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-t border-teal-100 dark:border-slate-700 sticky bottom-0"
+      className="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700"
     >
-      <div className="flex items-center gap-3 max-w-4xl mx-auto">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={handleTyping}
-          placeholder="Type a message..."
-          className="flex-1 p-3 rounded-full border border-teal-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all font-montserrat"
-        />
+      <div className="flex items-end gap-2 w-full">
+        {/* Attachment and emoji buttons (hidden on small screens) */}
+        <div className="hidden sm:flex gap-1 pb-2">
+          <button
+            type="button"
+            className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            aria-label="Add attachment"
+          >
+            <FiPaperclip size={18} />
+          </button>
+          <button
+            type="button"
+            className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            aria-label="Add emoji"
+          >
+            <FiSmile size={18} />
+          </button>
+        </div>
+
+        {/* Message input */}
+        <div className="flex-1 relative">
+          <input
+            ref={inputRef}
+            type="text"
+            value={newMessage}
+            onChange={handleTyping}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            className="w-full p-3 pl-4 pr-12 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all font-montserrat"
+          />
+        </div>
+
+        {/* Send button */}
         <button
           type="submit"
-          className="bg-teal-600 text-white p-3 rounded-full shadow-md hover:bg-teal-700 transition-transform hover:scale-105"
+          disabled={!newMessage.trim()}
+          className={`p-3 rounded-full shadow-sm transition-all ${
+            newMessage.trim()
+              ? "bg-indigo-600 text-white hover:bg-indigo-700 transform hover:scale-105"
+              : "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+          }`}
+          aria-label="Send message"
         >
-          <FaPaperPlane size={16} />
+          <FiSend size={18} />
         </button>
       </div>
     </form>
   );
 }
 
-export default ChatInput;
+export default React.memo(ChatInput);
