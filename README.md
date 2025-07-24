@@ -2,14 +2,28 @@
 
 Business Nexus is a networking platform connecting entrepreneurs with investors. The platform enables entrepreneurs to showcase their startups while allowing investors to discover opportunities and initiate collaborations.
 
+*Now powered by a scalable Node.js backend deployed on Render*
 
 ## 📊 UI Preview
+![Homepage Page](./public/screenshots/Homepage.png)
 ![Login Page](./public/screenshots/login.png)
 ![Register Page](./public/screenshots/register.png)
-![Dashboard Entrepreneur](./public/screenshots/dashboard_entrepreneur.png)
 ![Profile Page](./public/screenshots/profile_entrepreneur.png)
 ![Dashboard](./public/screenshots/dashboard_nav.png)
 ![Chat Page](./public/screenshots/chat_entrepreneur.png)
+![Discover Page](./public/screenshots/discover.png)
+![Request Page](./public/screenshots/requests.png)
+
+
+
+## 🚀 Live Deployments
+- **Main Demo**: [Vercel](https://business-nexus-phi.vercel.app)
+- **Mirron Demo**: [Netlify](https://business-nexuss.netlify.app)
+- **Backend API**: [Render](https://business-nexus-backend.onrender.com)
+
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-000000?logo=vercel&style=for-the-badge)](https://business-nexus-phi.vercel.app)
+[![Netlify Deployment](https://img.shields.io/badge/Netlify-Alt%20Demo-00C7B7?logo=netlify&style=for-the-badge)](https://business-nexuss.netlify.app)
+[![Render Backend](https://img.shields.io/badge/Render-Backend-46E3B7?logo=render&style=for-the-badge)](https://business-nexus-backend.onrender.com)
 
 
 ## ✨ Key Features
@@ -24,10 +38,27 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 - Responsive dashboard layout
 - Dynamic sidebar navigation
 
+### 💬 Real-Time Communication
+- Socket.IO powered chat
+- Typing indicators & read receipts
+- Conversation history
+- Mobile-responsive interface
+
 ### 🎨 UI Components
 - Reusable design system (Buttons, Inputs, Cards)
 - Tailwind CSS for consistent styling
 - Mobile-responsive layouts
+
+### 📊 Dynamic Dashboards
+- **Investor View**:
+  - Curated startup listings
+  - Advanced filtering (industry, funding stage)
+  - Quick-connect functionality
+
+- **Entrepreneur View**:
+  - Request management hub
+  - Investor analytics
+  - Connection metrics
 
 ## Features (Week 2)
 
@@ -62,93 +93,30 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 | Frontend        | React.js (Vite), Tailwind CSS         |
 | Routing         | React Router v6                       |
 | State Management| Context API                           |
-| Mock API        | JSON Server                           |
+| Mock API        | JSON Server (By default uses render)                          |
 | HTTP Client     | Axios                                 |
 | Version Control | Git                                   |
 
 ## 📂 Project Structure
 
 ```bash
-|-- src
-|   |-- App.jsx
-|   |-- assets
-|   |   `-- images
-|   |       `-- logo.png
-|   |-- components
-|   |   |-- auth
-|   |   |   |-- LoginForm.jsx
-|   |   |   `-- RegisterForm.jsx
-|   |   |-- chat
-|   |   |   |-- Chat.jsx
-|   |   |   |-- ChatHeader.jsx
-|   |   |   |-- ChatInput.jsx
-|   |   |   |-- ChatList.jsx
-|   |   |   `-- ChatMessages.jsx
-|   |   |-- common
-|   |   |   |-- Button.jsx
-|   |   |   |-- Card.jsx
-|   |   |   |-- Input.jsx
-|   |   |   |-- Navbar.jsx
-|   |   |   `-- ProtectedRoute.jsx
-|   |   |-- dashboard
-|   |   |   |-- DashboardHeader.jsx
-|   |   |   `-- Sidebar.jsx
-|   |   `-- profiles
-|   |       |-- EditProfileForm.jsx
-|   |       |-- EntrepreneursList.jsx
-|   |       |-- InvestorsList.jsx
-|   |       `-- InvestorsRequests.jsx
-|   |-- context
-|   |   `-- AuthContext.jsx
-|   |-- index.css
-|   |-- layouts
-|   |   |-- DashboardLayout.jsx
-|   |   `-- DashboardLayout.module.css
-|   |-- main.jsx
-|   |-- pages
-|   |   |-- Chat.jsx
-|   |   |-- EntrepreneurDashboard.jsx
-|   |   |-- EntrepreneurProfile.jsx
-|   |   |-- InvestorDashboard.jsx
-|   |   |-- InvestorProfile.jsx
-|   |   |-- Login.jsx
-|   |   |-- NotFound.jsx
-|   |   `-- Register.jsx
-|   |-- routes
-|   |   `-- AppRoutes.jsx
-|   |-- styles
-|   |   |-- global.css
-|   |   `-- index.css
-|   `-- utils
-|       `-- api.js
-|-- tailwind.config.js
-|-- vite.config.js
-|-- README.md
-|-- eslint.config.js
-|-- index.html
-|-- package-lock.json
-|-- package.json
-|-- postcss.config.js
+src/
+├── api/                  # Axios instance and API calls
+├── assets/               # Static assets
+├── components/           # Reusable components
+│   ├── auth/             # Authentication forms
+│   ├── chat/             # Real-time chat components
+│   ├── dashboard/        # Dashboard widgets
+│   └── profiles/         # Profile components
+├── context/              # Global state management
+├── hooks/                # Custom React hooks
+├── layouts/              # Application layouts
+├── pages/                # Route-level components
+├── routes/               # Routing configuration
+├── styles/               # Global styles
+└── utils/                # Utility functions
+
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -159,7 +127,7 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 - npm (v9+ recommended)
 
 
-## Setup Instructions
+## Setup Instructions (Locally - JSON Server)
 
 1. **Clone the Repository**:
    ```bash
@@ -199,29 +167,40 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 | Investor      | john@investor.com    |Invest123!   |
 | Entrepreneur  | sarah@entrepreneur.com| Startup456! |
 
+## Production (uses Render backend by default)
 
----
+### Running the App
+```bash
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## 🌟 Key Improvements with Render Backend
+✅ **Real database persistence** - MongoDB Atlas integration  
+✅ **Production-ready API** - Proper error handling and status codes  
+✅ **WebSocket support** - True real-time communication  
+✅ **Scalable infrastructure** - Handles increased traffic seamlessly  
 
 
 ## 📅 Development Roadmap
 
 ### Week 1 (Completed)
-✅ Authentication system  
-✅ Core routing structure  
-✅ Dashboard layout  
-✅ Design system foundation  
+- Authentication system  
+- Core routing structure  
+- Dashboard layout  
+- Design system foundation  
 
 ### Week 2 (Completed)
 - Investor dashboard with entrepreneur listings
 - Entrepreneur dashboard with collaboration requests
 - Profile view templates
 
-### Week 3 (Current)
+### Week 3 (Completed)
 - Real-time chat functionality
 - Profile enhancement features
 - UI polish and animations
 
-### Week 4
+### Week 4 (Compiled)
 - Comprehensive testing
 - Performance optimization
 - Deployment preparation
@@ -229,5 +208,7 @@ Business Nexus is a networking platform connecting entrepreneurs with investors.
 
 ---
 
-**Note**: This project is currently in active development as part of a 4-week internship program.
+**Note**: This project is currently in active development as part of a 4-week internship program. 
+
+**Not Anymore**. 
 
