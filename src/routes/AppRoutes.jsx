@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import ErrorBoundry from "../components/error/ErrorBoundry";
 import InvestorsRequests from "../components/profiles/InvestorsRequests";
 import EntrepreneursList from "../components/profiles/EntrepreneursList";
@@ -15,6 +15,7 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 import NotFound from "../pages/NotFound";
 import Homepage from '../pages/Homepage';
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 // DashboardSelector and ProfileSelector wrappers
 function DashboardSelector() {
@@ -32,6 +33,13 @@ function ProfileSelector() {
 }
 
 const AppRoutes = () => {
+  // Log location changes for debugging
+  const location = useLocation();
+  useEffect(() => {
+    console.log("AppRoutes: Location changed to", location.pathname);
+  }, [location]);
+  console.log("AppRoutes: Rendering routes");
+
   return (
     <Routes>
       {/* Auth */}

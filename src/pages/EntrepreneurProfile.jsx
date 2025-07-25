@@ -33,22 +33,28 @@ function EntrepreneurProfile() {
       }
       setEntrepreneur(response.data);
 
-      if (user && user.role === "investor") {
-        console.log(
-          "Checking existing request for investorId:",
-          user.id,
-          "entrepreneurId:",
-          id
-        );
-        const requestResponse = await api.get(
-          `/requests?investorId=${user.id}&entrepreneurId=${id}`
-        );
-        console.log("Request check response:", requestResponse.data);
-        setHasRequested(requestResponse.data.length > 0);
+      if (user && user.role === "investor" && user.id) {
+        try {
+          console.log("User ID:", user.id, "Entrepreneur ID:", id); // Debug log
+          console.log(
+            "Checking existing request for investorId:",
+            user.id,
+            "entrepreneurId:",
+            id
+          );
+          const requestResponse = await api.get(
+            `/requests?investorId=${user.id}&entrepreneurId=${id}`
+          );
+          console.log("Request check response:", requestResponse.data);
+          setHasRequested(requestResponse.data.length > 0);
+        } catch (requestErr) {
+          console.error("Error fetching requests:", requestErr.response?.data || requestErr.message);
+          setHasRequested(false);
+        }
       }
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching profile:", err);
+      console.error("Error fetching profile:", err.response?.data || err.message);
       setError(
         err.response?.status === 404
           ? "User not found"

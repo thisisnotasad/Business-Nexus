@@ -1,13 +1,22 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
+  const [user, setUser] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
   const navigate = useNavigate();
+
+  // Restore user from localStorage on mount
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+    console.log("AuthContext: Restoring user from localStorage", storedUser);
+    setUser(storedUser);
+    setIsAuthLoaded(true);
+  }, []);
 
   const login = async (email, password) => {
     try {
@@ -34,29 +43,28 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    return new Promise((resolve) => {
-      console.log("AuthContext: Logging out, clearing user and localStorage");
-      setIsLoggingOut(true);
-      setUser(null);
-      localStorage.removeItem("currentUser");
-      // Navigate to homepage
-      navigate("/", { replace: true });
-      // Clear isLoggingOut after navigation
-      setTimeout(() => {
-        setIsLoggingOut(false);
-        console.log("AuthContext: Logout complete, navigated to /");
-        resolve();
-      }, 100); 
-    });
+    console.log("AuthContext: Logging out, clearing user and localStorage");
+    setIsLoggingOut(true);
+    setUser(null);
+    localStorage.removeItem("currentUser");
+    navigate("/", { replace: true });
+    setTimeout(() => {
+      setIsLoggingOut(false);
+      console.log("AuthContext: Logout complete, navigated to /");
+    }, 100);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoggingOut, setIsLoggingOut }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoggingOut, isAuthLoaded }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
-}
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

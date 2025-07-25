@@ -1,10 +1,10 @@
-import AppRoutes from './routes/AppRoutes';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from "./context/AuthContext";
+import AppContent from "./pages/AppContent.jsx"; 
 
 const App = () => {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <AppContent />
     </AuthProvider>
   );
 };
